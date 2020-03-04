@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:tension_app/pages/PatientInfoDialog.dart';
 import 'PressureInputPage.dart';
 import 'PulseInputPage.dart';
 import 'WeightInputDialog.dart';
@@ -55,7 +56,11 @@ class HistoricPage extends StatelessWidget {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.edit),
-            onPressed: () {},
+            onPressed: () {
+              showDialog(context: context, builder: (BuildContext context){
+                return new PatientInfoDialog(patient: _patient,);
+              });
+            },
           )
         ],
       ),

@@ -34,6 +34,17 @@ class ValidationHelper {
       return response;
   }
 
+  static Future<Response> doPut(Settings settings, url,{Map<String, String> headers, body, Encoding encoding}) async {
+    var response = await http.put(url, headers: headers, body: body, encoding: encoding);
+
+    if (response.statusCode == 401) {
+      await refreshToken(settings);
+      headers[Constants.token_key] = "Bearer " + settings.access_token;
+      return await http.put(url, headers: headers, body: body, encoding: encoding);
+    }else
+      return response;
+  }
+
   static Future<Response> doGet(Settings settings, url,{Map<String, String> headers}) async {
     var response = await http.get(url, headers: headers);
 

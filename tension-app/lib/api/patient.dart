@@ -34,4 +34,42 @@ class PatientApi {
       return null;
     }
   }
+
+  static Future<Patient> postPatient(Settings settings, Patient patient) async {
+    final response = await ValidationHelper.doPost(settings, Constants.baseUrl + '/patient',
+        headers: {Constants.token_key: "Bearer " + settings.access_token},
+        body: {
+          "name": patient.name,
+          "lastName": patient.lastName,
+          "gender": patient.gender,
+          "birthday": patient.birthDay.day.toString().padLeft(2,"0") + "-" + patient.birthDay.month.toString().padLeft(2,"0") + "-" + patient.birthDay.year.toString(),
+          "height": patient.height.toString()
+        });
+
+    print(response.body);
+    if (response.statusCode == 200) {
+      print(json.decode(response.body));
+      return Patient.fromJson(json.decode(response.body)['data']);
+    } else {
+      return null;
+    }
+  }
+  static Future<Patient> putPatient(Settings settings, Patient patient) async {
+    final response = await ValidationHelper.doPut(settings, Constants.baseUrl + '/patient/'+patient.id.toString(),
+        headers: {Constants.token_key: "Bearer " + settings.access_token},
+        body: {
+          "name": patient.name,
+          "lastName": patient.lastName,
+          "gender": patient.gender,
+          "birthday": patient.birthDay.year.toString()+ "-" + patient.birthDay.month.toString().padLeft(2,"0")  + "-" + patient.birthDay.day.toString().padLeft(2,"0") ,
+          "height": patient.height.toString()
+        });
+
+    if (response.statusCode == 200) {
+      print(json.decode(response.body));
+      return Patient.fromJson(json.decode(response.body)['data']);
+    } else {
+      return null;
+    }
+  }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:tension_app/pages/PatientInfoDialog.dart';
 import '../api/patient.dart';
 import '../widgets/LoadingWidget.dart';
 import '../widgets/PatientListTile.dart';
@@ -41,7 +42,11 @@ class HomePage extends StatelessWidget {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.add),
-            onPressed: () {},
+            onPressed: () {
+              showDialog(context: context, builder: (BuildContext context){
+                return new PatientInfoDialog();
+              });
+            },
           ),
         ],
       ),
@@ -58,8 +63,8 @@ class HomePage extends StatelessWidget {
                 snapshot.data != null) {
               return RefreshIndicator(
                 //Indeed we just need to repaint.
-                onRefresh: () {
-                  _getAllData(force: true);
+                onRefresh: () async {
+                  await _getAllData(force: true);
                   _settings.refreshUI();
                   return;
                 },
