@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}TensionApp{% endblock %}
+
+{% block styles %}
+{{super()}}
+<link href="/cover.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
+    <header class="masthead mb-auto">
+        <div class="inner">
+            <!--<h3 class="masthead-brand">TensionApp</h3>-->
+            <nav class="nav nav-masthead justify-content-center">
+                <a class="nav-link active" href="#">Inicio</a>
+                <a class="nav-link" href="#">Documentacion</a>
+            </nav>
+        </div>
+    </header>
+
+    <main role="main" class="inner cover">
+        <h1 class="cover-heading"><b>TensionApp</b> server.</h1>
+        <p class="lead">Servidor para la app de control de presión, pulso y peso.</p>
+        <p class="lead">
+            <a href="https://github.com/hkfuertes/tension-app/releases">
+                <img src="/flutter_app_releases.png" width="300" height="300"/>
+            </a>
+            <!--<a href="#" class="btn btn-lg btn-secondary">Descargar</a>-->
+        </p>
+        <p class="lead small"><i>
+            Descarga la aplicación mediante el QR <br/>
+            (escaneándolo o clickando sobre él)</i></p>
+    </main>
+
+    <footer class="mastfoot mt-auto d-none d-md-block">
+        <div class="inner">
+            <p>
+                <small>
+                    <i class="muted">TFM Master en Ingenieria Biomedica @
+                        <span style="color: white; font-weight:bold;"> UPNA</span> -
+                        <span style="color: white;">Miguel Fuertes</span>
+                    </i>
+                </small>
+            </p>
+        </div>
+    </footer>
+</div>
+{% endblock %}
