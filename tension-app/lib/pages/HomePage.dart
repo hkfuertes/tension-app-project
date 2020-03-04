@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:tension_app/pages/PatientInfoDialog.dart';
+import 'package:tension_app/pages/PatientInfoPage.dart';
 import '../api/patient.dart';
 import '../widgets/LoadingWidget.dart';
 import '../widgets/PatientListTile.dart';
@@ -12,7 +12,6 @@ import '../constants.dart' as Constants;
 import 'HistoricPage.dart';
 
 class HomePage extends StatelessWidget {
-
   static String tag = 'home-page';
 
   final String PATIENT_LIST_KEY = "patient_list_key";
@@ -22,8 +21,7 @@ class HomePage extends StatelessWidget {
   Future<dynamic> _getAllData({force = false}) async {
     if (_settings != null) {
       if (_settings.cachedPatientList.length == 0 || force) {
-        _settings.cachedPatientList =
-            await PatientApi().getPatients(_settings);
+        _settings.cachedPatientList = await PatientApi().getPatients(_settings);
       }
       return _settings.cachedPatientList;
     } else
@@ -43,9 +41,8 @@ class HomePage extends StatelessWidget {
           IconButton(
             icon: Icon(Icons.add),
             onPressed: () {
-              showDialog(context: context, builder: (BuildContext context){
-                return new PatientInfoDialog();
-              });
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => PatientInfoPage()));
             },
           ),
         ],

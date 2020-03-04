@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:tension_app/pages/PatientInfoDialog.dart';
+import 'package:tension_app/pages/PatientInfoPage.dart';
 import 'PressureInputPage.dart';
 import 'PulseInputPage.dart';
 import 'WeightInputDialog.dart';
@@ -57,9 +57,11 @@ class HistoricPage extends StatelessWidget {
           IconButton(
             icon: Icon(Icons.edit),
             onPressed: () {
-              showDialog(context: context, builder: (BuildContext context){
-                return new PatientInfoDialog(patient: _patient,);
-              });
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          PatientInfoPage(patient: _patient)));
             },
           )
         ],
@@ -87,10 +89,8 @@ class HistoricPage extends StatelessWidget {
           }),
       floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
-            Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => PulseInputPage()));
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => PulseInputPage()));
           },
           tooltip: 'Medir',
           icon: Icon(
