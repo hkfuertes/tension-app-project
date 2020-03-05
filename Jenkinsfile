@@ -11,13 +11,12 @@ pipeline {
       steps {
         sh 'mv  ${WORKSPACE}/tension-app/build/app/outputs/apk/release/app-arm64-v8a-release.apk  ${WORKSPACE}/tension-app/build/app/outputs/apk/release/TensionApp.arm64.$(date +%d.%m.%Y).apk'
         sh 'mv  ${WORKSPACE}/tension-app/build/app/outputs/apk/release/app-armeabi-v7a-release.apk  ${WORKSPACE}/tension-app/build/app/outputs/apk/release/TensionApp.arm.$(date +%d.%m.%Y).apk'
-        archiveArtifacts 'build/app/outputs/apk/release/*.apk'
+        archiveArtifacts 'tension-app/build/app/outputs/apk/release/*.apk'
       }
     }
 
     stage('Publish') {
       steps {
-        input 'Send to Telegram?'
         telegramUploader(chatId: '171309216', filter: 'build/app/outputs/apk/release/*.apk')
       }
     }
