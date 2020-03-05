@@ -48,6 +48,7 @@ class HistoricPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _settings = Provider.of<Settings>(context);
+    _settings.viewingPatient = _patient;
     return Scaffold(
       appBar: AppBar(
         title: Text(_patient != null
@@ -56,37 +57,45 @@ class HistoricPage extends StatelessWidget {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.edit),
-            onPressed: () {
-              Navigator.push(
+            onPressed: () async{
+              await Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
-                          PatientInfoPage(patient: _patient)));
+                          PatientInfoPage(edit: true)));
+              _settings.refreshUI();
             },
           )
         ],
       ),
-      body: FutureBuilder(
-          future: _getAllData(),
-          builder: (BuildContext context, AsyncSnapshot snapshot) {
-            if (snapshot.connectionState == ConnectionState.done &&
-                snapshot.data != null) {
-              return RefreshIndicator(
-                //Indeed we just need to repaint.
-                onRefresh: () {
-                  _getAllData(force: true);
-                  _settings.refreshUI();
-                  return Future<void>(() {});
-                },
-                child: ListView.builder(
-                    itemCount: snapshot.data.length,
-                    itemBuilder: (BuildContext context, int position) {
-                      return MeasureWidget(snapshot.data[position]);
-                    }),
-              );
-            } else
-              return LoadingWidget("Cargando mediciones...");
-          }),
+      body: WillPopScope(
+        onWillPop: () async{
+          _settings.viewingPatient = null;
+          _settings.refreshUI();
+          return true;
+        },
+        child: FutureBuilder(
+            future: _getAllData(),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.connectionState == ConnectionState.done &&
+                  snapshot.data != null) {
+                return RefreshIndicator(
+                  //Indeed we just need to repaint.
+                  onRefresh: () {
+                    _getAllData(force: true);
+                    _settings.refreshUI();
+                    return Future<void>(() {});
+                  },
+                  child: ListView.builder(
+                      itemCount: snapshot.data.length,
+                      itemBuilder: (BuildContext context, int position) {
+                        return MeasureWidget(snapshot.data[position]);
+                      }),
+                );
+              } else
+                return LoadingWidget("Cargando mediciones...");
+            }),
+      ),
       floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
             Navigator.push(context,

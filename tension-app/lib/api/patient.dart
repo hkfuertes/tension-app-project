@@ -35,6 +35,8 @@ class PatientApi {
     }
   }
 
+  static Future<Patient> postViewingPatient(Settings settings) => postPatient(settings, settings.viewingPatient); 
+
   static Future<Patient> postPatient(Settings settings, Patient patient) async {
     final response = await ValidationHelper.doPost(settings, Constants.baseUrl + '/patient',
         headers: {Constants.token_key: "Bearer " + settings.access_token},
@@ -54,6 +56,9 @@ class PatientApi {
       return null;
     }
   }
+
+  static Future<Patient> putViewingPatient(Settings settings) => putPatient(settings, settings.viewingPatient);
+
   static Future<Patient> putPatient(Settings settings, Patient patient) async {
     final response = await ValidationHelper.doPut(settings, Constants.baseUrl + '/patient/'+patient.id.toString(),
         headers: {Constants.token_key: "Bearer " + settings.access_token},

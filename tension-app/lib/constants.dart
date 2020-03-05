@@ -1,5 +1,5 @@
-const host = "https://tensionapp.herokuapp.com";
-//const host = "http://192.168.1.48";
+//const host = "https://tensionapp.herokuapp.com";
+const host = "http://192.168.1.48";
 const baseUrl = host + "/api/v1";
 
 const token_key = "Authorization";
