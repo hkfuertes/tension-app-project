@@ -17,7 +17,7 @@ pipeline {
 
     stage('Publish') {
       steps {
-        telegramUploader(chatId: '171309216', filter: 'build/app/outputs/apk/release/*.apk')
+        telegramUploader(chatId: '171309216', filter: 'tension-app/build/app/outputs/apk/release/*.apk')
       }
     }
 
