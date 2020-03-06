@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import '../api/auth.dart';
 import '../model/AuthorizationModel.dart';
 
@@ -42,45 +43,72 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-
   void _doLogin() async {
-    AuthoritationModel authModel =
-        await Authorization.login(_email, _password);
+    AuthoritationModel authModel = await Authorization.login(_email, _password);
 
-    if(_settings != null && authModel != null){
+    if (_settings != null && authModel != null) {
       _settings.access_token = authModel.token;
       _settings.refresh_token = authModel.refresh;
 
       _settings.setDoctor(await UserApi.getUser(_settings));
 
-      _settings.saveSettings().then((_){
+      _settings.saveSettings().then((_) {
         print(authModel.token);
       });
+    }else{
+      Fluttertoast.showToast(msg: "¡Algo salio mal, prueba otra vez!",toastLength: Toast.LENGTH_LONG);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-
     _settings = Provider.of<Settings>(context);
 
     return new Scaffold(
-      appBar: AppBar(
-      title: new Text("TensionApp Login"),
-      centerTitle: true,
-    ),
-      body: new Container(
-        padding: EdgeInsets.all(16.0),
-        child: new Column(
-          children: <Widget>[
-            _buildTextFields(),
-            _buildButtons(),
-          ],
-        ),
+      appBar: AppBar(backgroundColor: Colors.brown, elevation: 0.0,),
+      body: ListView(
+        children: <Widget>[
+          Container(
+            height: 250,
+            color: Colors.brown,
+            child: Center(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  Text(
+                    "TENSION",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 50.0),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 32.0),
+                    child: Opacity(
+                      child: Text(
+                        "APP",
+                        style: TextStyle(color: Colors.white, fontSize: 35.0),
+                      ),
+                      opacity: 0.6,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: _buildTextFields(),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: _buildButtons(),
+          ),
+        ],
       ),
     );
   }
-
 
   Widget _buildTextFields() {
     return new Container(
@@ -95,7 +123,7 @@ class _LoginPageState extends State<LoginPage> {
           new Container(
             child: new TextField(
               controller: _passwordFilter,
-              decoration: new InputDecoration(labelText: 'Password'),
+              decoration: new InputDecoration(labelText: 'Contraseña'),
               obscureText: true,
             ),
           )
@@ -108,13 +136,24 @@ class _LoginPageState extends State<LoginPage> {
     return new Container(
       child: new Column(
         children: <Widget>[
-          new RaisedButton(
-            child: new Text('Login'),
-            onPressed: _doLogin,
+          Container(
+            height: 16,
+          ),
+          Row(
+            children: <Widget>[
+              Expanded(
+                child: OutlineButton(
+                  child: new Text('Entrar'),
+                  onPressed: _doLogin,
+                ),
+              ),
+            ],
+          ),
+          Container(
+            height: 32,
           )
         ],
       ),
     );
   }
-
 }
