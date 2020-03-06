@@ -1,7 +1,7 @@
 class User {
   final String email;
-  final String name;
-  final String lastName;
+  String name;
+  String lastName;
   final String gender;
   final String height;
   final DateTime birthDay;

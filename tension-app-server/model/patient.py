@@ -1,6 +1,6 @@
 # coding=utf-8
 
-from sqlalchemy import Column, String, Integer, Date, ForeignKey
+from sqlalchemy import Column, String, Integer, Date, Boolean, ForeignKey
 from sqlalchemy.orm import relationship
 from datetime import date
 
@@ -20,6 +20,8 @@ class Patient(db.Model):
     measures = relationship('Pressure')
     weight = relationship('Weight')
 
+    deleted = Column(Boolean, default=False)
+
     doctor_id = Column(Integer, ForeignKey('doctors.id'))
 
     def __init__(self, doctor, name, lastName, gender, birthday=None, height=None):
@@ -29,6 +31,7 @@ class Patient(db.Model):
         self.gender = gender
         self.birthday = birthday
         self.height = height
+        self.deleted = False
 
     def toDict(self):
         return {
@@ -38,6 +41,7 @@ class Patient(db.Model):
             'height': self.height,
             'gender': self.gender,
             'birthday': self.birthday.strftime("%Y-%m-%d"),
+            'deleted': self.deleted
         }
 
     def getAge(self):

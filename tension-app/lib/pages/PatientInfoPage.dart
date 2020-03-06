@@ -5,6 +5,8 @@ import 'package:tension_app/api/patient.dart';
 import 'package:tension_app/model/Patient.dart';
 import 'package:tension_app/model/Settings.dart';
 
+import '../constants.dart' as Constants;
+
 class PatientInfoPage extends StatefulWidget {
   bool edit;
   PatientInfoPage({this.edit = false});
@@ -82,87 +84,93 @@ class _PatientInfoPageState extends State<PatientInfoPage> {
                 _settings.updateCahedPatientWithViewingPatient();
                 await PatientApi.putViewingPatient(_settings);
               } else {
-                _settings.cachedPatientList.add(
-                  await PatientApi.postViewingPatient(_settings)
-                );
+                _settings.cachedPatientList
+                    .add(await PatientApi.postViewingPatient(_settings));
               }
               Navigator.of(context).pop();
             },
           )
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ListView(
-          shrinkWrap: true,
-          children: <Widget>[
-            Container(
-              height: 2 * spacing,
-            ),
-            SizedBox(
-              height: 100.0,
-              width: 100.0,
-              child: CircleAvatar(
-                child: Icon(
-                  (_genero == 0)
-                      ? FontAwesomeIcons.userAlt
-                      : FontAwesomeIcons.userAlt,
-                  size: 50.0,
-                ),
+      body: ListView(
+        shrinkWrap: true,
+        children: <Widget>[
+          Container(
+            height: 2 * spacing,
+          ),
+          SizedBox(
+            height: 100.0,
+            width: 100.0,
+            child: CircleAvatar(
+              child: Icon(
+                (_genero == 0)
+                    ? FontAwesomeIcons.userAlt
+                    : FontAwesomeIcons.userAlt,
+                size: 50.0,
               ),
             ),
-            Container(
-              height: 2 * spacing,
+          ),
+          Container(
+            height: 2 * spacing,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: <Widget>[
+                TextField(
+                  controller: _nombre,
+                  autofocus: false,
+                  decoration: InputDecoration(
+                      labelText: "Nombre", border: OutlineInputBorder()),
+                ),
+                Container(
+                  height: spacing,
+                ),
+                TextField(
+                  controller: _appellido,
+                  autofocus: false,
+                  decoration: InputDecoration(
+                      labelText: "Apelido", border: OutlineInputBorder()),
+                ),
+                Container(
+                  height: spacing,
+                ),
+                TextField(
+                  controller: _altura,
+                  keyboardType: TextInputType.number,
+                  autofocus: false,
+                  decoration: InputDecoration(
+                      suffixText: "cm",
+                      labelText: "Altura",
+                      border: OutlineInputBorder()),
+                ),
+                Container(
+                  height: spacing,
+                ),
+                DropdownButton<int>(
+                  isExpanded: true,
+                  value: _genero,
+                  items: _generosSpanish.asMap().entries.map((entry) {
+                    return new DropdownMenuItem<int>(
+                      value: entry.key,
+                      child: new Text(entry.value),
+                    );
+                  }).toList(),
+                  onChanged: (selected) {
+                    setState(() {
+                      _genero = selected;
+                    });
+                  },
+                ),
+                Container(
+                  height: spacing,
+                ),
+              ],
             ),
-            TextField(
-              controller: _nombre,
-              autofocus: false,
-              decoration: InputDecoration(
-                  labelText: "Nombre", border: OutlineInputBorder()),
-            ),
-            Container(
-              height: spacing,
-            ),
-            TextField(
-              controller: _appellido,
-              autofocus: false,
-              decoration: InputDecoration(
-                  labelText: "Appelido", border: OutlineInputBorder()),
-            ),
-            Container(
-              height: spacing,
-            ),
-            TextField(
-              controller: _altura,
-              keyboardType: TextInputType.number,
-              autofocus: false,
-              decoration: InputDecoration(
-                  suffixText: "cm",
-                  labelText: "Altura",
-                  border: OutlineInputBorder()),
-            ),
-            Container(
-              height: spacing,
-            ),
-            DropdownButton<int>(
-              isExpanded: true,
-              value: _genero,
-              items: _generosSpanish.asMap().entries.map((entry) {
-                return new DropdownMenuItem<int>(
-                  value: entry.key,
-                  child: new Text(entry.value),
-                );
-              }).toList(),
-              onChanged: (selected) {
-                setState(() {
-                  _genero = selected;
-                });
-              },
-            ),
-            Container(
-              height: spacing,
-            ),
-            OutlineButton.icon(
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: OutlineButton.icon(
               icon: Icon(Icons.calendar_today),
               label: Text((_selectedDateString != null)
                   ? _selectedDateString
@@ -182,12 +190,48 @@ class _PatientInfoPageState extends State<PatientInfoPage> {
                 });
               },
             ),
-            (this.widget.edit) ? Container(
-              height: 3*spacing,
-            ): Container(),
-            (this.widget.edit)? OutlineButton.icon(onPressed: () async {}, label: Text("Eliminar"), icon: Icon(Icons.delete),): Container()
-          ],
-        ),
+          ),
+          (this.widget.edit)
+              ? Container(
+                  height: spacing,
+                )
+              : Container(),
+          (this.widget.edit)
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: OutlineButton.icon(
+                    onPressed: () async {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            actions: <Widget>[
+                              FlatButton(
+                                child: Text(Constants.delete_patient_button),
+                                onPressed: () async {
+                                  if (await PatientApi.deleteViewingPatient(
+                                      _settings)) {
+                                    _settings.cachedPatientList
+                                        .remove(_settings.viewingPatient);
+                                        Navigator.pop(context);
+                                    _settings.viewingPatient = null;
+                                    _settings.refreshUI();
+                                  }
+                                },
+                              )
+                            ],
+                            content: Text(Constants.delete_patient_text.replaceAll("<patient.name>", _settings.viewingPatient.name)),
+                            title: Text(Constants.delete_patient_title),
+                          );
+                        },
+                      );
+                    },
+                    label: Text("Eliminar"),
+                    icon: Icon(Icons.delete),
+                  ),
+                )
+              : Container()
+        ],
       ),
     );
   }

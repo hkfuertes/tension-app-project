@@ -47,6 +47,9 @@ class HistoricPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _settings = Provider.of<Settings>(context);
+
+    if(_settings.viewingPatient == null) Navigator.of(context).pop();
+
     _patient = _settings.viewingPatient;
     return Scaffold(
       appBar: AppBar(

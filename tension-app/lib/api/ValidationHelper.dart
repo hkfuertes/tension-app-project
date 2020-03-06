@@ -55,4 +55,15 @@ class ValidationHelper {
     }else
       return response;
   }
+
+  static Future<Response> doDelete(Settings settings, url,{Map<String, String> headers}) async {
+    var response = await http.delete(url, headers: headers);
+
+    if (response.statusCode == 401) {
+      await refreshToken(settings);
+      headers[Constants.token_key] = "Bearer " + settings.access_token;
+      return await http.get(url, headers: headers);
+    }else
+      return response;
+  }
 }

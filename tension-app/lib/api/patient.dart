@@ -77,4 +77,18 @@ class PatientApi {
       return null;
     }
   }
+
+  static Future<bool> deleteViewingPatient(Settings settings) => deletePatient(settings, settings.viewingPatient);
+
+  static Future<bool> deletePatient(Settings settings, Patient patient) async {
+    final response = await ValidationHelper.doDelete(settings, Constants.baseUrl + '/patient/'+patient.id.toString(),
+        headers: {Constants.token_key: "Bearer " + settings.access_token});
+
+    if (response.statusCode == 200) {
+      print(json.decode(response.body));
+      return json.decode(response.body)['result'] == 'success';
+    } else {
+      return null;
+    }
+  }
 }

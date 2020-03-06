@@ -34,10 +34,10 @@ def create():
 @jwt_required
 def show(id):
     user = getUser(get_jwt_identity())
-    patient = Patient.query.filter_by(id=id).first()
+    patient = Patient.query.filter_by(id=id, deleted=False).first()
 
     if patient is None:
-        return jsonify({'result': 'failed', 'error': 'Doctor does not exist!'})
+        return jsonify({'result': 'failed', 'error': 'Patient does not exist or deleted!'})
 
     if patient.doctor_id != user.id:
         return jsonify({'result': 'failed', 'error': 'Patient not belongs to doctor!'})
@@ -45,25 +45,32 @@ def show(id):
     return jsonify({'result': 'success', 'data': JSONTool.object_as_dict(patient)})
 
 
-'''
 # Anonymize the Patient to keep information
-@patients.route('/user/me', methods=['DELETE'])
+@patients.route('/patient/<id>', methods=['DELETE'])
 @jwt_required
-def delete():
+def delete(id):
     user = getUser(get_jwt_identity())
+    patient = Patient.query.filter_by(id=id, deleted=False).first()
 
-    db.session.delete(user)
+    if patient is None:
+        return jsonify({'result': 'failed', 'error': 'Patient does not exist or deleted!'})
+
+    if patient.doctor_id != user.id:
+        return jsonify({'result': 'failed', 'error': 'Patient not belongs to doctor!'})
+    
+    patient.deleted = True
+
     db.session.commit()
 
     return jsonify({'result': 'success'})
-'''
+
 
 
 @patients.route('/patient/<id>', methods=['PUT'])
 @jwt_required
 def update(id):
     user = getUser(get_jwt_identity())
-    patient = Patient.query.filter_by(id=id, doctor_id=user.id).first()
+    patient = Patient.query.filter_by(id=id, doctor_id=user.id, deleted=False).first()
 
     if patient is None:
         return jsonify({'result': 'failed', 'error': 'Patient does not exist, or does not belong to doctor!'})
@@ -88,5 +95,5 @@ def update(id):
 @jwt_required
 def list():
     user = getUser(get_jwt_identity())
-    patients = Patient.query.filter_by(doctor_id=user.id).all()
+    patients = Patient.query.filter_by(doctor_id=user.id, deleted=False).all()
     return jsonify({'result': 'success', 'data': JSONTool.list_as_dict(patients)})
