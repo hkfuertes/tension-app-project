@@ -1,5 +1,5 @@
-//const host = "https://tensionapp.herokuapp.com";
-const host = "http://192.168.1.48";
+const host = "https://tensionapp.herokuapp.com";
+//const host = "http://192.168.1.48";
 const baseUrl = host + "/api/v1";
 
 const token_key = "Authorization";
@@ -14,6 +14,11 @@ const dashboard_title = "Dashboard";
 const patients_title = "Mis Pacientes";
 const profile_title = "Perfil";
 const stats_title = "Estadisticas";
+
+//Texts
+const log_out_text = "¿Quieres cerrar sesión?";
+const log_out_title = "Cerrar Sesión";
+const log_out_button = "Salir";
 
 //Months
 const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octurbre','Noviembre','Diciembre'];

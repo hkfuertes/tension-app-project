@@ -45,6 +45,12 @@ class Settings extends ChangeNotifier {
     //notifyListeners();
   }
 
+  void updateCahedPatientWithViewingPatient(){
+    var index = cachedPatientList.indexOf(this.viewingPatient);
+    this.cachedPatientList[index] = this.viewingPatient;
+    this.refreshUI();
+  }
+
   void logout(){
     this.darkTheme = false;
     this.access_token = "";

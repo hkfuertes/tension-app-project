@@ -41,7 +41,7 @@ class _MainFrameworkState extends State<MainFramework> {
               icon: Icon(FontAwesomeIcons.fileMedicalAlt),
               title: Text("Estadísticas")),
           BottomNavigationBarItem(
-              icon: Icon(Icons.settings), title: Text("Ajustes")),
+              icon: Icon(FontAwesomeIcons.userMd), title: Text("Perfil")),
         ],
       ),
     );

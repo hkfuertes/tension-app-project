@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tension_app/api/patient.dart';
 import 'package:tension_app/model/Patient.dart';
@@ -33,22 +34,23 @@ class _PatientInfoPageState extends State<PatientInfoPage> {
 
   _fillWithPatient(Patient patient) {
     if (patient != null) {
-      if(_nombre.text == "")
-        _nombre.text = patient.name;
-      if(_appellido.text == "")
-        _appellido.text = patient.lastName;
+      if (_nombre.text == "") _nombre.text = patient.name;
+      if (_appellido.text == "") _appellido.text = patient.lastName;
 
-      if(_genero == -1){
-        _genero = _generosIngles.indexOf(patient.gender[0].toUpperCase() + patient.gender.substring(1));
-        _genero = (_genero == -1) ? _generosSpanish.indexOf(patient.gender[0].toUpperCase() + patient.gender.substring(1)): 0;
+      if (_genero == -1) {
+        _genero = _generosIngles.indexOf(
+            patient.gender[0].toUpperCase() + patient.gender.substring(1));
+        _genero = (_genero == -1)
+            ? _generosSpanish.indexOf(
+                patient.gender[0].toUpperCase() + patient.gender.substring(1))
+            : _genero;
+        _genero = (_genero == -1) ? 0 : _genero;
       }
 
-      if(_altura.text=="")
-        _altura.text = patient.height.toString();
+      if (_altura.text == "") _altura.text = patient.height.toString();
 
-      if(_selectedDate == DateTime.now())
-        _selectedDate = patient.birthDay;
-      if(_selectedDateString == null)
+      if (_selectedDate == DateTime.now()) _selectedDate = patient.birthDay;
+      if (_selectedDateString == null)
         _selectedDateString = _pintarFecha(_selectedDate);
     }
   }
@@ -56,10 +58,9 @@ class _PatientInfoPageState extends State<PatientInfoPage> {
   @override
   Widget build(BuildContext context) {
     _settings = Provider.of<Settings>(context);
-    if(this.widget.edit)
-      _fillWithPatient(_settings.viewingPatient);
-    
-    if(_genero == -1) _genero = 0;
+    if (this.widget.edit) _fillWithPatient(_settings.viewingPatient);
+
+    if (_genero == -1) _genero = 0;
 
     _settings = Provider.of<Settings>(context);
 
@@ -78,9 +79,12 @@ class _PatientInfoPageState extends State<PatientInfoPage> {
             onPressed: () async {
               _settings.viewingPatient = _recreatePatient();
               if (this.widget.edit) {
+                _settings.updateCahedPatientWithViewingPatient();
                 await PatientApi.putViewingPatient(_settings);
               } else {
-                await PatientApi.postViewingPatient(_settings);
+                _settings.cachedPatientList.add(
+                  await PatientApi.postViewingPatient(_settings)
+                );
               }
               Navigator.of(context).pop();
             },
@@ -92,6 +96,24 @@ class _PatientInfoPageState extends State<PatientInfoPage> {
         child: ListView(
           shrinkWrap: true,
           children: <Widget>[
+            Container(
+              height: 2 * spacing,
+            ),
+            SizedBox(
+              height: 100.0,
+              width: 100.0,
+              child: CircleAvatar(
+                child: Icon(
+                  (_genero == 0)
+                      ? FontAwesomeIcons.userAlt
+                      : FontAwesomeIcons.userAlt,
+                  size: 50.0,
+                ),
+              ),
+            ),
+            Container(
+              height: 2 * spacing,
+            ),
             TextField(
               controller: _nombre,
               autofocus: false,
@@ -122,7 +144,7 @@ class _PatientInfoPageState extends State<PatientInfoPage> {
             Container(
               height: spacing,
             ),
-            new DropdownButton<int>(
+            DropdownButton<int>(
               isExpanded: true,
               value: _genero,
               items: _generosSpanish.asMap().entries.map((entry) {
@@ -148,16 +170,22 @@ class _PatientInfoPageState extends State<PatientInfoPage> {
               onPressed: () async {
                 _selectedDate = await showDatePicker(
                     context: context,
-                    initialDate:
-                        (_selectedDate == null || _selectedDate.isBefore(_firstDate)) ? DateTime.now() : _selectedDate,
+                    initialDate: (_selectedDate == null ||
+                            _selectedDate.isBefore(_firstDate))
+                        ? DateTime.now()
+                        : _selectedDate,
                     firstDate: _firstDate,
                     lastDate: _lastDate);
-                    print(_pintarFecha(_selectedDate));
+                print(_pintarFecha(_selectedDate));
                 setState(() {
                   _selectedDateString = _pintarFecha(_selectedDate);
                 });
               },
             ),
+            (this.widget.edit) ? Container(
+              height: 3*spacing,
+            ): Container(),
+            (this.widget.edit)? OutlineButton.icon(onPressed: () async {}, label: Text("Eliminar"), icon: Icon(Icons.delete),): Container()
           ],
         ),
       ),

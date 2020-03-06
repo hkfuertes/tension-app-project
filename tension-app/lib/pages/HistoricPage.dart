@@ -16,11 +16,10 @@ import '../constants.dart' as Constants;
 class HistoricPage extends StatelessWidget {
   static String tag = 'historic-page';
 
-  HistoricPage(this._patient);
-
   List<Measure> measures = List<Measure>();
 
   Settings _settings;
+
   Patient _patient;
 
 /*
@@ -48,7 +47,7 @@ class HistoricPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _settings = Provider.of<Settings>(context);
-    _settings.viewingPatient = _patient;
+    _patient = _settings.viewingPatient;
     return Scaffold(
       appBar: AppBar(
         title: Text(_patient != null

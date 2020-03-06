@@ -18,4 +18,11 @@ class Patient {
       birthDay: json['birthday'] != null ? DateTime.parse(json['birthday']): null,
     );
   }
+
+  bool operator ==(Object other){
+    if (!(other is Patient)) return false;
+    else{
+      return this.id == (other as Patient).id;
+    }
+  }
 }
