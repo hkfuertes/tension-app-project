@@ -18,7 +18,7 @@ const stats_title = "Estadisticas";
 //Texts
 const log_out_text = "¿Quieres cerrar sesión?";
 const log_out_title = "Cerrar Sesión";
-const log_out_button = "Salir";
+const log_out_button = "Cerrar";
 
 //Months
 const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octurbre','Noviembre','Diciembre'];
