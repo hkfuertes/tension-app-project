@@ -6,19 +6,20 @@ import '../widgets.dart';
 
 class PatientListTile extends StatelessWidget {
 
-  PatientListTile({this.patient, this.onTap}) : super();
+  PatientListTile({this.patient, this.onTap, this.withAvatar=true}) : super();
   final Patient patient;
   final Function onTap;
+  bool withAvatar;
 
   @override
   Widget build(BuildContext context) {
     var age = (DateTime.now().difference(patient.birthDay??DateTime.now()).inDays / 365).floor().toString();
     return ListTile(
-      /*
-      leading: Padding(
+      
+      trailing: (withAvatar) ? Padding(
         padding: EdgeInsets.only(left: 10),
-        child: Icon(FontAwesomeIcons.user)),
-        */
+        child: Icon((patient.gender == "Female") ?FontAwesomeIcons.venus: FontAwesomeIcons.mars)):Container(),
+      
       title: Text(patient.name + " " + patient.lastName),
       subtitle:Row(
         children: <Widget>[
