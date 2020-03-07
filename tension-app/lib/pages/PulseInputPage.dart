@@ -62,6 +62,7 @@ class _PulseInputPageState extends State<PulseInputPage> {
               IconButton(
                 icon: Icon(Icons.save),
                 onPressed: () {
+                  _beats = int.parse(_controller.text);
                   var measure = Preasure(pulse: _beats);
                   MeasureApi()
                       .postPreasure(

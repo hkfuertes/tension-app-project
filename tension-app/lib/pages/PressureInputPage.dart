@@ -22,13 +22,9 @@ class _PressureInputPageState extends State<PressureInputPage> {
   List<Preasure> _pressures = [];
   bool _saved = false;
 
-  void _doPost(Preasure pressure) async {
+  _doPost(Preasure pressure) async {
     await MeasureApi().postPreasure(_settings, _settings.viewingPatient.id, pressure);
     _settings.cachedMeasures.add(pressure);
-    setState(() {
-      _saved = true;
-    });
-    Navigator.of(context).pop();
   }
 
   void _showMessage() {
@@ -98,8 +94,10 @@ class _PressureInputPageState extends State<PressureInputPage> {
                       ),
                       TextSpan(text: avgPressure.pulse.toString()),
                     ])),
-                onTap: () {
-                  _doPost(avgPressure);
+                onTap: () async {
+                  await _doPost(avgPressure);
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
                 },
               ),
               ListTile(
@@ -128,6 +126,8 @@ class _PressureInputPageState extends State<PressureInputPage> {
                     ])),
                 onTap: () async {
                   await _doPost(_pressures.last);
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
                 },
               )
             ],
@@ -140,8 +140,6 @@ class _PressureInputPageState extends State<PressureInputPage> {
   @override
   Widget build(BuildContext context) {
     _settings = Provider.of<Settings>(context);
-
-    if(_saved) Navigator.of(context).pop(); 
 
     return Scaffold(
       appBar: AppBar(
@@ -159,7 +157,10 @@ class _PressureInputPageState extends State<PressureInputPage> {
               onPressed: () {
                 if (_pressures.length > 1)
                   _saveMessage();
-                else if (_pressures.length > 0) _doPost(_pressures.last);
+                else if (_pressures.length > 0){
+                  _doPost(_pressures.last);
+                  Navigator.of(context).pop();
+                } 
                 //print(takes.toList().toString());
                 //_postTakes(takes);
               },

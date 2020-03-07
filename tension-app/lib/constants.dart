@@ -26,6 +26,9 @@ const delete_patient_text = "¿Quieres borrar a <patient.name>?";
 const delete_patient_title = "Confirmación";
 const delete_patient_button = "Borrar";
 
+const yes = "Sí";
+const no = "No";
+
 //Months
 const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octurbre','Noviembre','Diciembre'];
 const meses_ab = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];

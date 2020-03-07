@@ -14,9 +14,6 @@ class ProfilePage extends StatelessWidget {
   TextEditingController _nombre = TextEditingController(),
       _apellido = TextEditingController();
 
-  TextEditingController _contrasena = TextEditingController(),
-      _rcontrasena = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     _settings = Provider.of<Settings>(context);
@@ -38,10 +35,16 @@ class ProfilePage extends StatelessWidget {
                   return AlertDialog(
                     actions: <Widget>[
                       FlatButton(
-                        child: Text(Constants.log_out_button),
+                        child: Text(Constants.yes),
                         onPressed: () {
                           Navigator.of(context).pop();
                           _settings.logout();
+                        },
+                      ),
+                      FlatButton(
+                        child: Text(Constants.no),
+                        onPressed: () {
+                          Navigator.of(context).pop();
                         },
                       )
                     ],
