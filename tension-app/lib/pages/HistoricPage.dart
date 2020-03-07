@@ -120,9 +120,10 @@ class HistoricPage extends StatelessWidget {
               FlatButton.icon(
                   icon: Icon(FontAwesomeIcons.weight, color: Colors.brown),
                   label: Text("Peso"),
-                  onPressed: () {
-                    showDialog(
+                  onPressed: () async {
+                    await showDialog(
                         context: context, child: WeightInputDialog.getDialog());
+                    _settings.refreshUI();
                   })
             ],
           ),

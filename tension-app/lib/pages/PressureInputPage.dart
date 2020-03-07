@@ -20,13 +20,15 @@ class _PressureInputPageState extends State<PressureInputPage> {
   TakeWidget _take = TakeWidget();
   Settings _settings;
   List<Preasure> _pressures = [];
+  bool _saved = false;
 
-  void _doPost(Preasure pressure) {
-    MeasureApi().postPreasure(
-        _settings, _settings.viewingPatient.id, pressure).then((_){
-          _settings.cachedMeasures.add(pressure);
-          Navigator.of(context).pop();
-        });
+  void _doPost(Preasure pressure) async {
+    await MeasureApi().postPreasure(_settings, _settings.viewingPatient.id, pressure);
+    _settings.cachedMeasures.add(pressure);
+    setState(() {
+      _saved = true;
+    });
+    Navigator.of(context).pop();
   }
 
   void _showMessage() {
@@ -41,8 +43,8 @@ class _PressureInputPageState extends State<PressureInputPage> {
                 onPressed: () {
                   setState(() {
                     _pressures.add(_take.getValues());
-                    Navigator.of(context).pop();
                   });
+                  Navigator.of(context).pop();
                 },
                 child: Text('Aceptar'))
           ],
@@ -124,8 +126,8 @@ class _PressureInputPageState extends State<PressureInputPage> {
                       ),
                       TextSpan(text: _pressures.last.pulse.toString()),
                     ])),
-                onTap: () {
-                  _doPost(_pressures.last);
+                onTap: () async {
+                  await _doPost(_pressures.last);
                 },
               )
             ],
@@ -138,6 +140,8 @@ class _PressureInputPageState extends State<PressureInputPage> {
   @override
   Widget build(BuildContext context) {
     _settings = Provider.of<Settings>(context);
+
+    if(_saved) Navigator.of(context).pop(); 
 
     return Scaffold(
       appBar: AppBar(
@@ -155,8 +159,7 @@ class _PressureInputPageState extends State<PressureInputPage> {
               onPressed: () {
                 if (_pressures.length > 1)
                   _saveMessage();
-                else if(_pressures.length > 0)
-                  _doPost(_pressures.last);
+                else if (_pressures.length > 0) _doPost(_pressures.last);
                 //print(takes.toList().toString());
                 //_postTakes(takes);
               },

@@ -38,24 +38,27 @@ class WeightInputDialog extends StatelessWidget {
       actions: <Widget>[
         FlatButton(
           child: Text("Guardar"),
-          onPressed: () {
-            dialog._postValue();
+          onPressed: () async {
+            await dialog._postValue();
           },
         )
       ],
     );
   }
 
-  _postValue() {
-    if(_settings != null){
-      MeasureApi().postWeight(_settings, _settings.viewingPatient.id ,double.parse(_controller.text), "Kg").then((postCorrect){
-        if(_context != null && postCorrect){
-          _settings.cachedMeasures.add(Weight(timestamp: DateTime.now(),value: double.parse(_controller.text), unit: "Kg"));
-          Navigator.of(_context).pop();
-        }
+  _postValue() async {
+    if (_settings != null) {
+      var weight = Weight(
+          timestamp: DateTime.now(),
+          value: double.parse(_controller.text),
+          unit: "Kg");
 
-          
-      });
+      var postCorrect = await MeasureApi.postWeight(
+          _settings, _settings.viewingPatient.id, weight);
+      if (_context != null && postCorrect) {
+        _settings.cachedMeasures.add(weight);
+        Navigator.of(_context).pop();
+      }
     }
   }
 }

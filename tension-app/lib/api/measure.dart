@@ -34,11 +34,11 @@ class MeasureApi {
     }
   }
 
-  Future<bool> postWeight(Settings settings, patient_id, double value, String units) async {
+  static Future<bool> postWeight(Settings settings, patientId, Weight weight) async {
     final response = await ValidationHelper.doPost(
-        settings, Constants.baseUrl + '/patient/'+patient_id+'/weight', body: {
-      'timestamp': DateTime.now().toString(),
-      'weight': value.toString()
+        settings, Constants.baseUrl + '/patient/'+patientId+'/weight', body: {
+      'timestamp': weight.timestamp.toString(),
+      'weight': weight.value.toString()
     }, headers: {
       Constants.token_key: "Bearer " + settings.access_token
     });
