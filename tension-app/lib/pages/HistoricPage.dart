@@ -70,34 +70,27 @@ class HistoricPage extends StatelessWidget {
           )
         ],
       ),
-      body: WillPopScope(
-        onWillPop: () async{
-          _settings.viewingPatient = null;
-          _settings.refreshUI();
-          return true;
-        },
-        child: FutureBuilder(
-            future: _getAllData(),
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              if (snapshot.connectionState == ConnectionState.done &&
-                  snapshot.data != null) {
-                return RefreshIndicator(
-                  //Indeed we just need to repaint.
-                  onRefresh: () {
-                    _getAllData(force: true);
-                    _settings.refreshUI();
-                    return Future<void>(() {});
-                  },
-                  child: ListView.builder(
-                      itemCount: snapshot.data.length,
-                      itemBuilder: (BuildContext context, int position) {
-                        return MeasureWidget(snapshot.data[position]);
-                      }),
-                );
-              } else
-                return LoadingWidget("Cargando mediciones...");
-            }),
-      ),
+      body: FutureBuilder(
+          future: _getAllData(),
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            if (snapshot.connectionState == ConnectionState.done &&
+                snapshot.data != null) {
+              return RefreshIndicator(
+                //Indeed we just need to repaint.
+                onRefresh: () {
+                  _getAllData(force: true);
+                  _settings.refreshUI();
+                  return Future<void>(() {});
+                },
+                child: ListView.builder(
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (BuildContext context, int position) {
+                      return MeasureWidget(snapshot.data[position]);
+                    }),
+              );
+            } else
+              return LoadingWidget("Cargando mediciones...");
+          }),
       floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
             Navigator.push(context,
