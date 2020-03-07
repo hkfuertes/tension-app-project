@@ -18,7 +18,8 @@ class PulseInputPage extends StatefulWidget {
 }
 
 class _PulseInputPageState extends State<PulseInputPage> {
-  MethodChannel _platform = const MethodChannel('net.mfuertes.tensionapp/channel');
+  MethodChannel _platform =
+      const MethodChannel('net.mfuertes.tensionapp/channel');
 
   Settings _settings;
   int _beats = 0;
@@ -75,70 +76,66 @@ class _PulseInputPageState extends State<PulseInputPage> {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(32.0),
-              child: Center(
-                  child: TextField(
-                controller: _controller,
-                focusNode: _focusNode,
-                style: new TextStyle(fontSize: 30, color: Colors.black),
-                keyboardType: TextInputType.number,
-                autofocus: false,
-                decoration: InputDecoration(
-                    suffixText: "bpm",
-                    labelText: "Pulso",
-                    border: OutlineInputBorder()),
-              )),
-            ),
-            Expanded(
+            Material(
+              shadowColor: Colors.brown,
+              elevation: 2.0,
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                      border: Border.all(color: Colors.brown),
-                      borderRadius: BorderRadius.circular(16.0)),
-                  child: ListView(
-                    shrinkWrap: true,
-                    children: <Widget>[
-                      ListTile(
-                        enabled: Platform.isAndroid,
-                        title: Text("Medir con el Móvil"),
-                        subtitle: Text("Usar el flash del móvil y la camara."),
-                        onTap: () {
-                          _startCameraActivity();
-                        },
-                      ),
-                      ListTile(
-                        enabled: Platform.isAndroid,
-                        title: Text("Medir con el aparato"),
-                        subtitle: Text(
-                            "Conectar el aparato al puerto USB para medir."),
-                        onTap: () async {
-                          _startSerialActivity();
-                          /*
-                          var result = await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => PulseInputUSBPage()));
-                          setState(() {
-                            _beats = result != null && (result.containsKey('pulse') ) ? result['pulse'] : _beats;
-                            _controller.text = _beats.toString();
-                            _controller.selection = TextSelection.fromPosition(
-                                TextPosition(offset: _beats.toString().length));
-                          });
-                           */
-                        },
-                      ),
-                      ListTile(
-                        title: Text("Introducir manualmente"),
-                        subtitle: Text("Copiar el dato de un medidor externo."),
-                        onTap: () {
-                          FocusScope.of(context).requestFocus(_focusNode);
-                        },
-                      )
-                    ],
+                child: Center(
+                    child: TextField(
+                  controller: _controller,
+                  focusNode: _focusNode,
+                  style: new TextStyle(fontSize: 24, color: Colors.black),
+                  keyboardType: TextInputType.number,
+                  autofocus: false,
+                  decoration: InputDecoration(
+                      suffixText: "bpm",
+                      labelText: "Pulso",
+                      border: OutlineInputBorder()),
+                )),
+              ),
+            ),
+            Expanded(
+              child: ListView(
+                shrinkWrap: true,
+                children: <Widget>[
+                  ListTile(
+                    enabled: Platform.isAndroid,
+                    title: Text("Medir con el Móvil"),
+                    subtitle: Text("Usar el flash del móvil y la camara."),
+                    onTap: () {
+                      _startCameraActivity();
+                    },
                   ),
-                ),
+                  ListTile(
+                    enabled: Platform.isAndroid,
+                    title: Text("Medir con el aparato"),
+                    subtitle:
+                        Text("Conectar el aparato al puerto USB para medir."),
+                    onTap: () async {
+                      _startSerialActivity();
+                      /*
+                      var result = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => PulseInputUSBPage()));
+                      setState(() {
+                        _beats = result != null && (result.containsKey('pulse') ) ? result['pulse'] : _beats;
+                        _controller.text = _beats.toString();
+                        _controller.selection = TextSelection.fromPosition(
+                            TextPosition(offset: _beats.toString().length));
+                      });
+                       */
+                    },
+                  ),
+                  ListTile(
+                    title: Text("Introducir manualmente"),
+                    subtitle: Text("Copiar el dato de un medidor externo."),
+                    onTap: () {
+                      FocusScope.of(context).requestFocus(_focusNode);
+                    },
+                  )
+                ],
               ),
             )
           ],
@@ -150,7 +147,6 @@ class _PulseInputPageState extends State<PulseInputPage> {
   }
 
   Future<void> _startCameraActivity() async {
-
     Map<PermissionGroup, PermissionStatus> permissions =
         await PermissionHandler().requestPermissions([PermissionGroup.camera]);
     if ([PermissionStatus.unknown]
@@ -187,7 +183,6 @@ class _PulseInputPageState extends State<PulseInputPage> {
   }
 
   Future<void> _startSerialActivity() async {
-
     try {
       final int result = await _platform.invokeMethod('startSerialActivity');
       setState(() {
