@@ -1,0 +1,3 @@
+[submodule "tension-app-server"]
+	path = tension-app-server
+	url = https://github.com/hkfuertes/tension-app-server
