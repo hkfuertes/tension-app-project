@@ -94,22 +94,30 @@ void loop()
 {
     webSocket.loop();
 
-    long irValue = particleSensor.getIR(); //Reading the IR value it will permit us to know if there's a finger on the sensor or not
-                                           //Also detecting a heartbeat
+    long irValue = particleSensor.getIR(); 
+    //Reading the IR value it will permit us to know if there's a finger on the sensor or not
+    
+    //Also detecting a heartbeat
     if (irValue > 7000)
     {
-        if (checkForBeat(irValue) == true) //If a heart beat is detected
+        //If a heart beat is detected
+        if (checkForBeat(irValue) == true) 
         {
             //We sensed a beat!
-            long delta = millis() - lastBeat; //Measure duration between two beats
+            long delta = millis() - lastBeat; 
+            //Measure duration between two beats
             lastBeat = millis();
 
-            beatsPerMinute = 60 / (delta / 1000.0); //Calculating the BPM
+            //Calculating the BPM
+            beatsPerMinute = 60 / (delta / 1000.0); 
 
-            if (beatsPerMinute < 255 && beatsPerMinute > 20) //To calculate the average we strore some values (4) then do some math to calculate the average
+            //To calculate the average we strore some values (4) then do some math to calculate the average
+            if (beatsPerMinute < 255 && beatsPerMinute > 20) 
             {
-                rates[rateSpot++] = (byte)beatsPerMinute; //Store this reading in the array
-                rateSpot %= RATE_SIZE;                    //Wrap variable
+                //Store this reading in the array
+                rates[rateSpot++] = (byte)beatsPerMinute;
+                //Wrap variable
+                rateSpot %= RATE_SIZE;                    
 
                 //Take average of readings
                 beatAvg = 0;
