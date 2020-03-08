@@ -44,8 +44,6 @@ Las llamadas a la api para obtener informacion sobre el doctor.
 ### Endpoints relacionados con los pacientes
 Las llamadas a la api para obtener informacion sobre el paciente. 
 
->_Actualmente solo se usa listar pacientes en la app._
-
 | Accion                            | URL                    | Método   | Autenticación
 | --------------------------------- | ---------------------  | -------- | -------------
 | Pacientes para el doctor del `JWT`| `/api/v1/patients`     | **GET**  | JWT in Header "Bearer"
