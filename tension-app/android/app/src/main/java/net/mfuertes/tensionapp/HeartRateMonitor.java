@@ -52,7 +52,7 @@ public class HeartRateMonitor extends AppCompatActivity implements SurfaceHolder
     private SurfaceView _preview;
 
     private int _beat = -1;
-    private HRPreviewCallback _previewCallback = new HRPreviewCallback((beat) -> {
+    private HRCallback _previewCallback = new HRCallback((beat) -> {
         text.setText(beat+" bpm");
         this._beat = beat;
     });
