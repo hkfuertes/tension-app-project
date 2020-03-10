@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tension_app/api/user.dart';
 import '../model/Settings.dart';
+import 'SettingsPage.dart';
 
 import '../constants.dart' as Constants;
 
@@ -27,32 +28,10 @@ class ProfilePage extends StatelessWidget {
         leading: Icon(FontAwesomeIcons.userMd),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.exit_to_app),
+            icon: Icon(Icons.settings),
             onPressed: () async {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    actions: <Widget>[
-                      FlatButton(
-                        child: Text(Constants.yes),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                          _settings.logout();
-                        },
-                      ),
-                      FlatButton(
-                        child: Text(Constants.no),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      )
-                    ],
-                    content: Text(Constants.log_out_text),
-                    title: Text(Constants.log_out_title),
-                  );
-                },
-              );
+              await Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => SettingsPage()));
             },
           )
         ],
@@ -101,30 +80,31 @@ class ProfilePage extends StatelessWidget {
             child: OutlineButton(
               child: Text("Guardar"),
               onPressed: () async {
-                if(_settings.doctor.name != _nombre.text || _settings.doctor.lastName != _apellido.text)
-                showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: Text(Constants.save_title),
-                        content: Text(Constants.save_text),
-                        actions: <Widget>[
-                          FlatButton(
-                            child: Text(Constants.save_button),
-                            onPressed: () {
-                              _settings.doctor.name = _nombre.text;
-                              _settings.doctor.lastName = _apellido.text;
+                if (_settings.doctor.name != _nombre.text ||
+                    _settings.doctor.lastName != _apellido.text)
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text(Constants.save_title),
+                          content: Text(Constants.save_text),
+                          actions: <Widget>[
+                            FlatButton(
+                              child: Text(Constants.save_button),
+                              onPressed: () {
+                                _settings.doctor.name = _nombre.text;
+                                _settings.doctor.lastName = _apellido.text;
 
-                              UserApi.putUser(_settings);
+                                UserApi.putUser(_settings);
 
-                              Navigator.of(context).pop();
+                                Navigator.of(context).pop();
 
-                              _settings.refreshUI();
-                            },
-                          )
-                        ],
-                      );
-                    });
+                                _settings.refreshUI();
+                              },
+                            )
+                          ],
+                        );
+                      });
               },
             ),
           )

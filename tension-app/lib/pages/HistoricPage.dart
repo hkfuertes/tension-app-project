@@ -15,6 +15,8 @@ import '../constants.dart' as Constants;
 
 import 'package:charts_flutter/flutter.dart' as charts;
 
+import 'GraphWidget.dart';
+
 
 class HistoricPage extends StatelessWidget {
   static String tag = 'historic-page';
@@ -90,30 +92,9 @@ class HistoricPage extends StatelessWidget {
                           child: PageView(
                             controller: _measuresController,
                             children: <Widget>[
-                              Card(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left:8.0),
-                                  child: charts.TimeSeriesChart(
-                                    _createPressureData(snapshot.data)
-                                  ),
-                                ),
-                              ),
-                              Card(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left:8.0),
-                                  child: charts.TimeSeriesChart(
-                                    _createPulseData(snapshot.data)
-                                  ),
-                                ),
-                              ),
-                              Card(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left:8.0),
-                                  child: charts.TimeSeriesChart(
-                                    _createWeightData(snapshot.data)
-                                  ),
-                                ),
-                              ),
+                              GraphWidget(series: _createPressureData(snapshot.data), title: "Presión Sanguinea", position: 1, total:3),
+                              GraphWidget(series: _createPulseData(snapshot.data), title: "Pulso (bpm)",position: 2, total:3),
+                              GraphWidget(series: _createWeightData(snapshot.data), title: "Peso (kg)",position: 3, total:3),
                             ],
                           ),
                         );

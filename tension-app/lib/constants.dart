@@ -14,6 +14,7 @@ const dashboard_title = "Dashboard";
 const patients_title = "Mis Pacientes";
 const profile_title = "Perfil";
 const stats_title = "Estadisticas";
+const settings_title = "Ajustes";
 
 //Texts
 const log_out_text = "¿Quieres cerrar sesión?";
@@ -25,6 +26,9 @@ const save_text = "¿Quieres guardar?";
 const delete_patient_text = "¿Quieres borrar a <patient.name>?";
 const delete_patient_title = "Confirmación";
 const delete_patient_button = "Borrar";
+
+const patient_graph_title = "Gráficas de paciente";
+const patient_graph_text = "Son las graficas que se muestran al principio de la lista de medidas de un paciente";
 
 const yes = "Sí";
 const no = "No";
