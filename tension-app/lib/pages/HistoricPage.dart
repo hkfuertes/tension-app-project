@@ -13,6 +13,9 @@ import '../model/Settings.dart';
 import '../model/MeasureModel.dart';
 import '../constants.dart' as Constants;
 
+import 'package:charts_flutter/flutter.dart' as charts;
+
+
 class HistoricPage extends StatelessWidget {
   static String tag = 'historic-page';
 
@@ -22,12 +25,7 @@ class HistoricPage extends StatelessWidget {
 
   Patient _patient;
 
-/*
-  _showAddModal(BuildContext context) {
-    showModalBottomSheet<void>(
-        context: context, builder: HistoricPageWidgets.modalSheet);
-  }
-*/
+  final _measuresController = PageController(initialPage: 0);
 
   Future<dynamic> _getAllData({force: true}) async {
     if (_settings != null) {
@@ -83,9 +81,44 @@ class HistoricPage extends StatelessWidget {
                   return Future<void>(() {});
                 },
                 child: ListView.builder(
-                    itemCount: snapshot.data.length,
+                    itemCount: snapshot.data.length + 1,
                     itemBuilder: (BuildContext context, int position) {
-                      return MeasureWidget(snapshot.data[position]);
+                      if (position == 0)
+                        return !_settings.graphsShown ? Container() :Container(
+                          padding: const EdgeInsets.all(8.0),
+                          height: 200,
+                          child: PageView(
+                            controller: _measuresController,
+                            children: <Widget>[
+                              Card(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left:8.0),
+                                  child: charts.TimeSeriesChart(
+                                    _createPressureData(snapshot.data)
+                                  ),
+                                ),
+                              ),
+                              Card(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left:8.0),
+                                  child: charts.TimeSeriesChart(
+                                    _createPulseData(snapshot.data)
+                                  ),
+                                ),
+                              ),
+                              Card(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left:8.0),
+                                  child: charts.TimeSeriesChart(
+                                    _createWeightData(snapshot.data)
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      else
+                        return MeasureWidget(snapshot.data[position-1]);
                     }),
               );
             } else
@@ -131,4 +164,62 @@ class HistoricPage extends StatelessWidget {
       ),
     );
   }
+
+  static List<charts.Series<Preasure, DateTime>> _createPressureData(List<Measure> _measures) {
+
+    List<Preasure> data = _measures.map((m) => (m is Preasure)? m : null).toList();
+    data.removeWhere((m) => m == null);
+    data.removeWhere((m) => m.high == null || m.high == 0);
+    data.removeWhere((m) => m.low == null || m.low == 0);
+
+    return [
+      new charts.Series<Preasure, DateTime>(
+        id: 'High',
+        colorFn: (_, __) => charts.MaterialPalette.red.shadeDefault,
+        domainFn: (Preasure p, _) => p.timestamp,
+        measureFn: (Preasure p, _) => p.high,
+        data: data,
+      ),
+      new charts.Series<Preasure, DateTime>(
+        id: 'Low',
+        colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
+        domainFn: (Preasure p, _) => p.timestamp,
+        measureFn: (Preasure p, _) => p.low,
+        data: data,
+      )
+    ];
+  }
+
+  static List<charts.Series<Preasure, DateTime>> _createPulseData(List<Measure> _measures) {
+
+    List<Preasure> data = _measures.map((m) => (m is Preasure)? m : null).toList();
+    data.removeWhere((m) => m == null);
+
+    return [
+      new charts.Series<Preasure, DateTime>(
+        id: 'Pulse',
+        colorFn: (_, __) => charts.MaterialPalette.black,
+        domainFn: (Preasure p, _) => p.timestamp,
+        measureFn: (Preasure p, _) => p.low,
+        data: data,
+      )
+    ];
+  }
+
+  static List<charts.Series<Weight, DateTime>> _createWeightData(List<Measure> _measures) {
+
+    List<Weight> data = _measures.map((m) => (m is Weight)? m : null).toList();
+    data.removeWhere((m) => m == null);
+
+    return [
+      new charts.Series<Weight, DateTime>(
+        id: 'Pulse',
+        colorFn: (_, __) => charts.MaterialPalette.red.shadeDefault,
+        domainFn: (Weight p, _) => p.timestamp,
+        measureFn: (Weight p, _) => p.value,
+        data: data,
+      )
+    ];
+  }
+
 }

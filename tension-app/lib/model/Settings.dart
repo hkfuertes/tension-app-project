@@ -24,6 +24,8 @@ class Settings extends ChangeNotifier {
   List<Measure> cachedMeasures;
   Patient viewingPatient;
 
+  bool graphsShown = true;
+
   Settings() {
     this.darkTheme = false;
     this.access_token = "";

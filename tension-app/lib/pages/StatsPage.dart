@@ -144,6 +144,7 @@ class _StatsPageState extends State<StatsPage> {
                         ),
                       ),
                     ),
+                    Container(height: 30,)
                   ],
                 );
               } else
