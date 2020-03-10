@@ -8,7 +8,9 @@ class GraphWidget extends StatelessWidget {
 
   double _spacing = 4;
 
-  GraphWidget({this.series, this.title, position, total = 1}){
+  List<charts.LineAnnotationSegment> annotations;
+
+  GraphWidget({this.series, this.title, position, total = 1, this.annotations = const []}){
     if(total != 1)
       for(var i = 0; i<total; i++){
         if(position-1 == i)
@@ -59,7 +61,9 @@ class GraphWidget extends StatelessWidget {
           child: Card(
             child: Padding(
               padding: const EdgeInsets.only(left: 8.0),
-              child: charts.TimeSeriesChart(series),
+              child: charts.TimeSeriesChart(series, behaviors: [
+                new charts.RangeAnnotation(annotations)
+              ],),
             ),
           ),
         ),

@@ -146,6 +146,29 @@ class HistoricPage extends StatelessWidget {
     );
   }
 
+
+  static List<charts.LineAnnotationSegment> _pressureAnnotations(int high, int low){
+    return [
+      new charts.LineAnnotationSegment(
+            high, charts.RangeAnnotationAxisType.measure,
+            //startLabel: high.toString()+" mmHg",
+            color: charts.MaterialPalette.gray.shade300),
+        new charts.LineAnnotationSegment(
+            low, charts.RangeAnnotationAxisType.measure,
+            //startLabel: low.toString()+" mmHg",
+            color: charts.MaterialPalette.gray.shade200),
+    ];
+  }
+
+  static List<charts.LineAnnotationSegment> _weightAnnotation(double value){
+    return [
+      new charts.LineAnnotationSegment(
+            value, charts.RangeAnnotationAxisType.measure,
+            startLabel: 'Objetivo ('+value.toString()+" kg)",
+            color: charts.MaterialPalette.gray.shade300)
+    ];
+  }
+
   static List<charts.Series<Preasure, DateTime>> _createPressureData(List<Measure> _measures) {
 
     List<Preasure> data = _measures.map((m) => (m is Preasure)? m : null).toList();
@@ -167,7 +190,7 @@ class HistoricPage extends StatelessWidget {
         domainFn: (Preasure p, _) => p.timestamp,
         measureFn: (Preasure p, _) => p.low,
         data: data,
-      )
+      ),
     ];
   }
 

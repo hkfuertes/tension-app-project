@@ -1,3 +1,5 @@
+import 'model/Settings.dart';
+
 const host = "https://tensionapp.herokuapp.com";
 //const host = "http://192.168.1.48";
 const baseUrl = host + "/api/v1";
@@ -28,7 +30,14 @@ const delete_patient_title = "Confirmación";
 const delete_patient_button = "Borrar";
 
 const patient_graph_title = "Gráficas de paciente";
-const patient_graph_text = "Son las graficas que se muestran al principio de la lista de medidas de un paciente";
+const patient_graph_text = "Son las graficas que se muestran al principio de la lista de medidas de un paciente.";
+
+const patient_weight_obj_title = "Objetivo de peso";
+const patient_weight_obj_text = "Muestra una linea en la grafica de peso.";
+
+const patient_weight_obj_value_title = "Valor del objetivo";
+const patient_weight_obj_value_text = "Selecciona el peso objetivo";
+const patient_weight_obj_value_text_selected = "El objetivo actual es de "+Settings.WEIGHT_OBJ+" kg";
 
 const yes = "Sí";
 const no = "No";

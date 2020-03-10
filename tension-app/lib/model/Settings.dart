@@ -12,6 +12,8 @@ class Settings extends ChangeNotifier {
   static const ACCESS_TOKEN = "access_token";
   static const REFRESH_TOKEN = "refresh_token";
   static const GRAPH_SHOWN = "graph_shown";
+  static const WEIGHT_OBJ = "weight_obj";
+  static const TARGET_ON = "target_on";
 
   //Settings
   String access_token = "";
@@ -25,11 +27,17 @@ class Settings extends ChangeNotifier {
 
   bool graphsShown = true;
 
+  bool objetivo = false;
+  double objetivoPeso = -1;
+
   Settings() {
     this.access_token = "";
     this.refresh_token = "";
     this.cachedPatientList = [];
     this.cachedMeasures = [];
+    this.graphsShown = true;
+    this.objetivoPeso = -1;
+    this.objetivo = false;
   }
 
   void fill(SharedPreferences sp) {
@@ -42,6 +50,12 @@ class Settings extends ChangeNotifier {
 
     this.graphsShown = sp.getBool(GRAPH_SHOWN);
     this.graphsShown = (this.graphsShown == null) ? true : this.graphsShown;
+
+    this.objetivo = sp.getBool(TARGET_ON);
+    this.objetivo = (this.objetivo == null) ? false : this.objetivo;
+
+    this.objetivoPeso = sp.getDouble(WEIGHT_OBJ);
+    this.objetivoPeso = (this.objetivoPeso == null) ? 0 : this.objetivoPeso;
 
     //notifyListeners();
   }
@@ -75,6 +89,8 @@ class Settings extends ChangeNotifier {
     await sp.setString(ACCESS_TOKEN, this.access_token);
     await sp.setString(REFRESH_TOKEN, this.refresh_token);
     await sp.setBool(GRAPH_SHOWN, this.graphsShown);
+    await sp.setDouble(WEIGHT_OBJ, this.objetivoPeso);
+    await sp.setBool(TARGET_ON, this.objetivo);
 
     if(toast)
       Fluttertoast.showToast(
