@@ -23,7 +23,7 @@ class _PressureInputPageState extends State<PressureInputPage> {
   bool _saved = false;
 
   _doPost(Preasure pressure) async {
-    await MeasureApi().postPreasure(_settings, _settings.viewingPatient.id, pressure);
+    await MeasureApi.postPreasure(_settings, _settings.viewingPatient.id, pressure);
     _settings.cachedMeasures.add(pressure);
   }
 

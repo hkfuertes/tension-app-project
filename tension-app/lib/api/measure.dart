@@ -8,7 +8,7 @@ import '../model/MeasureModel.dart';
 import '../constants.dart' as Constants;
 
 class MeasureApi {
-  Future<List<Preasure>> getPressures(Settings settings, patient_id) async {
+  static Future<List<Preasure>> getPressures(Settings settings, patient_id) async {
     final response = await ValidationHelper.doGet(
         settings, Constants.baseUrl + '/patient/' + patient_id + '/pressure',
         headers: {Constants.token_key: "Bearer " + settings.access_token});
@@ -21,7 +21,7 @@ class MeasureApi {
     }
   }
 
-  Future<List<Weight>> getWeights(Settings settings, patient_id) async {
+  static Future<List<Weight>> getWeights(Settings settings, patient_id) async {
     final response = await ValidationHelper.doGet(
         settings, Constants.baseUrl + '/patient/' + patient_id + '/weight',
         headers: {Constants.token_key: "Bearer " + settings.access_token});
@@ -46,7 +46,7 @@ class MeasureApi {
     return (response.statusCode == 200);
   }
 
-  Future<bool> postPreasure(
+  static Future<bool> postPreasure(
       Settings settings, patientId, Preasure pressure) async {
     final response = await ValidationHelper.doPost(
         settings,

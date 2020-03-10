@@ -21,7 +21,7 @@ class HomePage extends StatelessWidget {
   Future<dynamic> _getAllData({force = false}) async {
     if (_settings != null) {
       if (_settings.cachedPatientList.length == 0 || force) {
-        _settings.cachedPatientList = await PatientApi().getPatients(_settings);
+        _settings.cachedPatientList = await PatientApi.getPatients(_settings);
       }
       return _settings.cachedPatientList;
     } else

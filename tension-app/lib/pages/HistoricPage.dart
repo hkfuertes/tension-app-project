@@ -34,9 +34,9 @@ class HistoricPage extends StatelessWidget {
       if (_settings.cachedMeasures.length == 0 || force) {
         List<Measure> measures = [];
         measures.addAll(
-            await MeasureApi().getPressures(_settings, _patient.id) ?? []);
+            await MeasureApi.getPressures(_settings, _patient.id) ?? []);
         measures.addAll(
-            await MeasureApi().getWeights(_settings, _patient.id) ?? []);
+            await MeasureApi.getWeights(_settings, _patient.id) ?? []);
         measures.sort((a, b) => b.timestamp.compareTo(a.timestamp));
         _settings.cachedMeasures = measures;
       }

@@ -64,7 +64,7 @@ class _PulseInputPageState extends State<PulseInputPage> {
                 onPressed: () {
                   _beats = int.parse(_controller.text);
                   var measure = Preasure(pulse: _beats);
-                  MeasureApi()
+                  MeasureApi
                       .postPreasure(
                           _settings, _settings.viewingPatient.id, measure)
                       .then((_) {

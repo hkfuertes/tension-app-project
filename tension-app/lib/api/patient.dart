@@ -9,7 +9,7 @@ import '../constants.dart' as Constants;
 import 'package:http/http.dart' as http;
 
 class PatientApi {
-  Future<Patient> getPatient(Settings settings, patientId) async {
+  static Future<Patient> getPatient(Settings settings, patientId) async {
     final response = await http.get(
         Constants.baseUrl + '/patient/' + patientId,
         headers: {Constants.token_key: "Bearer " + settings.access_token});
@@ -23,7 +23,7 @@ class PatientApi {
     }
   }
 
-  Future<List<Patient>> getPatients(Settings settings) async {
+  static Future<List<Patient>> getPatients(Settings settings) async {
     final response = await ValidationHelper.doGet(settings, Constants.baseUrl + '/patients',
         headers: {Constants.token_key: "Bearer " + settings.access_token});
 
