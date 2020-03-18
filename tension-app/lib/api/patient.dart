@@ -90,7 +90,7 @@ class PatientApi {
           "limit_diastolic": patient.limit_diastolic.toString(),
           "limit_pulse": patient.limit_pulse.toString(),
           "rythm_type": patient.rythm_type.toString(),
-          "treatment": patient.treatment
+          "treatment": patient.treatment.toString()
         });
 
     if (response.statusCode == 200) {
