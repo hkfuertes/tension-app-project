@@ -47,6 +47,8 @@ class PatientApi {
         body: {
           "name": patient.name,
           "lastName": patient.lastName,
+          "email": patient.name.toLowerCase()+"@"+patient.lastName.toLowerCase(),
+          "password": patient.name.toLowerCase()+"_"+patient.lastName.toLowerCase(),
           "gender": patient.gender,
           "birthday": patient.birthDay.day.toString().padLeft(2, "0") +
               "-" +

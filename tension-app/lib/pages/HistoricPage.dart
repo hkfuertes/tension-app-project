@@ -57,11 +57,16 @@ class HistoricPage extends StatelessWidget {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-          Text(_patient != null
-            ? _patient.name + " " + _patient.lastName
-            : Constants.historics_title),
-            Text(Patient.rythmTypes[_patient.rythm_type], style: Theme.of(context).textTheme.body1.copyWith(color: Colors.white, fontStyle: FontStyle.italic))
-        ],),
+            Text(_patient != null
+                ? _patient.name + " " + _patient.lastName
+                : Constants.historics_title),
+            (_patient.rythm_type != null)
+                ? Text(Patient.rythmTypes[_patient.rythm_type],
+                    style: Theme.of(context).textTheme.body1.copyWith(
+                        color: Colors.white, fontStyle: FontStyle.italic))
+                : Container()
+          ],
+        ),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.history),
@@ -278,14 +283,14 @@ class HistoricPage extends StatelessWidget {
 
     return [
       new charts.Series<Preasure, DateTime>(
-        id: 'High',
+        id: 'Systolic',
         colorFn: (_, __) => charts.MaterialPalette.red.shadeDefault,
         domainFn: (Preasure p, _) => p.timestamp,
         measureFn: (Preasure p, _) => p.high,
         data: data,
       ),
       new charts.Series<Preasure, DateTime>(
-        id: 'Low',
+        id: 'Diastolic',
         colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
         domainFn: (Preasure p, _) => p.timestamp,
         measureFn: (Preasure p, _) => p.low,
@@ -318,7 +323,7 @@ class HistoricPage extends StatelessWidget {
 
     return [
       new charts.Series<Weight, DateTime>(
-        id: 'Pulse',
+        id: 'Weight',
         colorFn: (_, __) => charts.MaterialPalette.red.shadeDefault,
         domainFn: (Weight p, _) => p.timestamp,
         measureFn: (Weight p, _) => p.value,
