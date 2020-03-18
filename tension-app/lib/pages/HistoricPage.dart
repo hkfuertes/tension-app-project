@@ -45,6 +45,90 @@ class HistoricPage extends StatelessWidget {
     }
   }
 
+  List<Widget> _populateChildren(List<Measure> measures) {
+    List<Widget> retVal = [];
+
+    if (_settings.graphsShown)
+      retVal.add(Container(
+        padding: const EdgeInsets.all(8.0),
+        height: 200,
+        child: PageView(
+          controller: _measuresController,
+          children: <Widget>[
+            GraphWidget(
+              series: _createPressureData(measures),
+              title: "Presión Sanguinea",
+              position: 1,
+              total: 3,
+              annotations: (_patient.limit_diastolic != null &&
+                      _patient.limit_systolic != null)
+                  ? _pressureAnnotations(
+                      _patient.limit_systolic, _patient.limit_diastolic)
+                  : [],
+            ),
+            GraphWidget(
+              series: _createPulseData(measures),
+              title: "Pulso (bpm)",
+              position: 2,
+              total: 3,
+              annotations: (_patient.limit_pulse != null)
+                  ? _pulseAnnotation(_patient.limit_pulse.toDouble())
+                  : [],
+            ),
+            GraphWidget(
+                series: _createWeightData(measures),
+                title: "Peso (kg)",
+                position: 3,
+                total: 3),
+          ],
+        ),
+      ));
+    if (_patient.treatment != "" && _patient.treatment != null)
+      retVal.add(Container(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      Text(
+                        "Tratamiento",
+                        style: TextStyle(color: Colors.brown, fontSize: 16),
+                      )
+                    ],
+                  ),
+                ),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Container(
+                        height: 150,
+                        child: Card(
+                          child: SingleChildScrollView(
+                              child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(_patient.treatment),
+                          )),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ])));
+
+    retVal.addAll(measures
+        .map((e) => MeasureWidget(
+              e,
+              height: this._patient.height,
+            ))
+        .toList());
+
+    return retVal;
+  }
+
   @override
   Widget build(BuildContext context) {
     _settings = Provider.of<Settings>(context);
@@ -100,102 +184,7 @@ class HistoricPage extends StatelessWidget {
                   _settings.refreshUI();
                   return Future<void>(() {});
                 },
-                child: ListView.builder(
-                    itemCount:
-                        (_patient.treatment != "" && _patient.treatment != null)
-                            ? snapshot.data.length + 2
-                            : snapshot.data.length + 1,
-                    itemBuilder: (BuildContext context, int position) {
-                      if (position == 0)
-                        return !_settings.graphsShown
-                            ? Container()
-                            : Container(
-                                padding: const EdgeInsets.all(8.0),
-                                height: 200,
-                                child: PageView(
-                                  controller: _measuresController,
-                                  children: <Widget>[
-                                    GraphWidget(
-                                      series:
-                                          _createPressureData(snapshot.data),
-                                      title: "Presión Sanguinea",
-                                      position: 1,
-                                      total: 3,
-                                      annotations: (_patient.limit_diastolic !=
-                                                  null &&
-                                              _patient.limit_systolic != null)
-                                          ? _pressureAnnotations(
-                                              _patient.limit_systolic,
-                                              _patient.limit_diastolic)
-                                          : [],
-                                    ),
-                                    GraphWidget(
-                                      series: _createPulseData(snapshot.data),
-                                      title: "Pulso (bpm)",
-                                      position: 2,
-                                      total: 3,
-                                      annotations: (_patient.limit_pulse !=
-                                              null)
-                                          ? _pulseAnnotation(
-                                              _patient.limit_pulse.toDouble())
-                                          : [],
-                                    ),
-                                    GraphWidget(
-                                        series:
-                                            _createWeightData(snapshot.data),
-                                        title: "Peso (kg)",
-                                        position: 3,
-                                        total: 3),
-                                  ],
-                                ),
-                              );
-                      else if (position == 1 &&
-                          _patient.treatment != "" &&
-                          _patient.treatment != null)
-                        return Container(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8.0),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: <Widget>[
-                                        Text(
-                                          "Tratamiento",
-                                          style: TextStyle(
-                                              color: Colors.brown,
-                                              fontSize: 16),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                  Row(
-                                    children: <Widget>[
-                                      Expanded(
-                                        child: Container(
-                                          height: 150,
-                                          child: Card(
-                                            child: SingleChildScrollView(
-                                                child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Text(_patient.treatment),
-                                            )),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ]));
-                      else
-                        return MeasureWidget(
-                          snapshot.data[position - 1],
-                          height: this._patient.height,
-                        );
-                    }),
+                child: ListView(children: _populateChildren(snapshot.data)),
               );
             } else
               return LoadingWidget("Cargando mediciones...");
