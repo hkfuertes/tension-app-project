@@ -77,19 +77,19 @@ class _PressureInputPageState extends State<PressureInputPage> {
                         style: TextStyle(color: Colors.black),
                         children: [
                       TextSpan(
-                        text: "Alta: ",
+                        text: "Sistólica: ",
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       TextSpan(text: avgPressure.high.toString()),
                       TextSpan(text: "  "),
                       TextSpan(
-                        text: "Baja: ",
+                        text: "Diastólica: ",
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       TextSpan(text: avgPressure.low.toString()),
                       TextSpan(text: "  "),
                       TextSpan(
-                        text: "Pulso: ",
+                        text: "Frecuencia: ",
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       TextSpan(text: avgPressure.pulse.toString()),
@@ -107,19 +107,19 @@ class _PressureInputPageState extends State<PressureInputPage> {
                         style: TextStyle(color: Colors.black),
                         children: [
                       TextSpan(
-                        text: "Alta: ",
+                        text: "Sistólica: ",
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       TextSpan(text: _pressures.last.high.toString()),
                       TextSpan(text: "  "),
                       TextSpan(
-                        text: "Baja: ",
+                        text: "Diastólica: ",
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       TextSpan(text: _pressures.last.low.toString()),
                       TextSpan(text: "  "),
                       TextSpan(
-                        text: "Pulso: ",
+                        text: "Frecuencia: ",
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       TextSpan(text: _pressures.last.pulse.toString()),

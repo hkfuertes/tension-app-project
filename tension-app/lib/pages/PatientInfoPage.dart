@@ -24,7 +24,7 @@ class _PatientInfoPageState extends State<PatientInfoPage> {
 
   Settings _settings;
 
-  DateTime _selectedDate = DateTime.now();
+  DateTime _selectedDate;
   int _genero = -1;
   List<String> _generosIngles = ['Male', 'Female'];
   List<String> _generosSpanish = ['Hombre', 'Mujer'];
@@ -51,9 +51,8 @@ class _PatientInfoPageState extends State<PatientInfoPage> {
 
       if (_altura.text == "") _altura.text = patient.height.toString();
 
-      if (_selectedDate == DateTime.now()) _selectedDate = patient.birthDay;
-      if (_selectedDateString == null)
-        _selectedDateString = _pintarFecha(_selectedDate);
+      if (_selectedDate == null) _selectedDate = patient.birthDay;
+      _selectedDateString = _pintarFecha(_selectedDate);
     }
   }
 
@@ -63,8 +62,6 @@ class _PatientInfoPageState extends State<PatientInfoPage> {
     if (this.widget.edit) _fillWithPatient(_settings.viewingPatient);
 
     if (_genero == -1) _genero = 0;
-
-    _settings = Provider.of<Settings>(context);
 
     return Scaffold(
       appBar: AppBar(

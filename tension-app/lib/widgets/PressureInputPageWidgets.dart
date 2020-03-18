@@ -24,7 +24,7 @@ class TakeWidget extends StatelessWidget {
           decoration: InputDecoration(
               suffixText: "mmHg",
               hintText: "140",
-              labelText: "Alta",
+              labelText: "Sistólica",
               border: OutlineInputBorder()),
           onChanged: (String val) {
             this.alta = int.parse(val);
@@ -39,7 +39,7 @@ class TakeWidget extends StatelessWidget {
           decoration: InputDecoration(
               suffixText: "mmHg",
               hintText: "80",
-              labelText: "Baja",
+              labelText: "Diastólica",
               border: OutlineInputBorder()),
           onChanged: (String val) {
             this.baja = int.parse(val);
@@ -54,7 +54,7 @@ class TakeWidget extends StatelessWidget {
           decoration: InputDecoration(
               suffixText: "bpm",
               hintText: "70",
-              labelText: "Pulso",
+              labelText: "Frecuencia",
               border: OutlineInputBorder()),
           onChanged: (String val) {
             this.pulso = int.parse(val);

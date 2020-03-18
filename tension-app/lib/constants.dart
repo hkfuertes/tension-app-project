@@ -1,6 +1,7 @@
 import 'model/Settings.dart';
 
-const host = "https://tensionapp.herokuapp.com";
+const host = "https://tension-app-server.herokuapp.com";
+//const host = "https://tensionapp.herokuapp.com";
 //const host = "http://192.168.1.48";
 const baseUrl = host + "/api/v1";
 

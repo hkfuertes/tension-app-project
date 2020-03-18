@@ -5,9 +5,12 @@ import '../widgets.dart';
 import '../constants.dart' as Constants;
 
 class MeasureWidget extends StatelessWidget {
-  MeasureWidget(this.measure, {this.number}) : super();
+  MeasureWidget(this.measure, {this.number, this.height}) : super();
   final Measure measure;
   final int number;
+  final int height;
+
+  final String _nullHeight = " ¡falta la altura!";
 
   @override
   Widget build(BuildContext context) {
@@ -77,6 +80,7 @@ class MeasureWidget extends StatelessWidget {
             )),
         title: RichTextWithTitleAndBody(
             title: "Peso: ", body: weight.value.toString() + " " + weight.unit),
+        subtitle: RichTextWithTitleAndBody(body: (this.height == null)?this._nullHeight: " " + (weight.value / ((this.height/100) * (this.height/100))).toStringAsFixed(2), title: "IMC:",),
         trailing: Text(
             weight.timestamp.day.toString().padLeft(2, '0') +
                 " " +

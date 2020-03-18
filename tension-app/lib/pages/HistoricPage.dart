@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tension_app/pages/PatientInfoPage.dart';
+import 'package:tension_app/pages/PatientTreatment.dart';
 import 'PressureInputPage.dart';
 import 'PulseInputPage.dart';
 import 'WeightInputDialog.dart';
@@ -16,7 +17,6 @@ import '../constants.dart' as Constants;
 import 'package:charts_flutter/flutter.dart' as charts;
 
 import 'GraphWidget.dart';
-
 
 class HistoricPage extends StatelessWidget {
   static String tag = 'historic-page';
@@ -35,8 +35,8 @@ class HistoricPage extends StatelessWidget {
         List<Measure> measures = [];
         measures.addAll(
             await MeasureApi.getPressures(_settings, _patient.id) ?? []);
-        measures.addAll(
-            await MeasureApi.getWeights(_settings, _patient.id) ?? []);
+        measures
+            .addAll(await MeasureApi.getWeights(_settings, _patient.id) ?? []);
         measures.sort((a, b) => b.timestamp.compareTo(a.timestamp));
         _settings.cachedMeasures = measures;
       }
@@ -48,7 +48,7 @@ class HistoricPage extends StatelessWidget {
   Widget build(BuildContext context) {
     _settings = Provider.of<Settings>(context);
 
-    if(_settings.viewingPatient == null) Navigator.of(context).pop();
+    if (_settings.viewingPatient == null) Navigator.of(context).pop();
 
     _patient = _settings.viewingPatient;
     return Scaffold(
@@ -58,13 +58,20 @@ class HistoricPage extends StatelessWidget {
             : Constants.historics_title),
         actions: <Widget>[
           IconButton(
+            icon: Icon(Icons.history),
+            onPressed: () async {
+              await Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => PatientTreatment()));
+              _settings.refreshUI();
+            },
+          ),
+          IconButton(
             icon: Icon(Icons.edit),
-            onPressed: () async{
+            onPressed: () async {
               await Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) =>
-                          PatientInfoPage(edit: true)));
+                      builder: (context) => PatientInfoPage(edit: true)));
               _settings.refreshUI();
             },
           )
@@ -83,23 +90,78 @@ class HistoricPage extends StatelessWidget {
                   return Future<void>(() {});
                 },
                 child: ListView.builder(
-                    itemCount: snapshot.data.length + 1,
+                    itemCount: (_patient.treatment != "")? snapshot.data.length + 2:snapshot.data.length + 1,
                     itemBuilder: (BuildContext context, int position) {
                       if (position == 0)
-                        return !_settings.graphsShown ? Container() :Container(
-                          padding: const EdgeInsets.all(8.0),
-                          height: 200,
-                          child: PageView(
-                            controller: _measuresController,
-                            children: <Widget>[
-                              GraphWidget(series: _createPressureData(snapshot.data), title: "Presión Sanguinea", position: 1, total:3),
-                              GraphWidget(series: _createPulseData(snapshot.data), title: "Pulso (bpm)",position: 2, total:3),
-                              GraphWidget(series: _createWeightData(snapshot.data), title: "Peso (kg)",position: 3, total:3),
-                            ],
-                          ),
-                        );
+                        return !_settings.graphsShown
+                            ? Container()
+                            : Container(
+                                padding: const EdgeInsets.all(8.0),
+                                height: 200,
+                                child: PageView(
+                                  controller: _measuresController,
+                                  children: <Widget>[
+                                    GraphWidget(
+                                        series:
+                                            _createPressureData(snapshot.data),
+                                        title: "Presión Sanguinea",
+                                        position: 1,
+                                        total: 3),
+                                    GraphWidget(
+                                        series: _createPulseData(snapshot.data),
+                                        title: "Pulso (bpm)",
+                                        position: 2,
+                                        total: 3),
+                                    GraphWidget(
+                                        series:
+                                            _createWeightData(snapshot.data),
+                                        title: "Peso (kg)",
+                                        position: 3,
+                                        total: 3),
+                                  ],
+                                ),
+                              );
+                      else if (position == 1 && _patient.treatment != null)
+                        return Container(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: <Widget>[
+                                        Text(
+                                          "Tratamiento",
+                                          style: TextStyle(
+                                              color: Colors.brown,
+                                              fontSize: 16),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  Row(
+                                    children: <Widget>[
+                                      Expanded(
+                                        child: Container(
+                                          height: 150,
+                                          child: Card(
+                                            child: SingleChildScrollView(
+                                                child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Text(_patient.treatment),
+                                            )),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ]));
                       else
-                        return MeasureWidget(snapshot.data[position-1]);
+                        return MeasureWidget(snapshot.data[position - 1], height: this._patient.height,);
                     }),
               );
             } else
@@ -146,32 +208,33 @@ class HistoricPage extends StatelessWidget {
     );
   }
 
-
-  static List<charts.LineAnnotationSegment> _pressureAnnotations(int high, int low){
+  static List<charts.LineAnnotationSegment> _pressureAnnotations(
+      int high, int low) {
     return [
       new charts.LineAnnotationSegment(
-            high, charts.RangeAnnotationAxisType.measure,
-            //startLabel: high.toString()+" mmHg",
-            color: charts.MaterialPalette.gray.shade300),
-        new charts.LineAnnotationSegment(
-            low, charts.RangeAnnotationAxisType.measure,
-            //startLabel: low.toString()+" mmHg",
-            color: charts.MaterialPalette.gray.shade200),
+          high, charts.RangeAnnotationAxisType.measure,
+          //startLabel: high.toString()+" mmHg",
+          color: charts.MaterialPalette.gray.shade300),
+      new charts.LineAnnotationSegment(
+          low, charts.RangeAnnotationAxisType.measure,
+          //startLabel: low.toString()+" mmHg",
+          color: charts.MaterialPalette.gray.shade200),
     ];
   }
 
-  static List<charts.LineAnnotationSegment> _weightAnnotation(double value){
+  static List<charts.LineAnnotationSegment> _weightAnnotation(double value) {
     return [
       new charts.LineAnnotationSegment(
-            value, charts.RangeAnnotationAxisType.measure,
-            startLabel: 'Objetivo ('+value.toString()+" kg)",
-            color: charts.MaterialPalette.gray.shade300)
+          value, charts.RangeAnnotationAxisType.measure,
+          startLabel: 'Objetivo (' + value.toString() + " kg)",
+          color: charts.MaterialPalette.gray.shade300)
     ];
   }
 
-  static List<charts.Series<Preasure, DateTime>> _createPressureData(List<Measure> _measures) {
-
-    List<Preasure> data = _measures.map((m) => (m is Preasure)? m : null).toList();
+  static List<charts.Series<Preasure, DateTime>> _createPressureData(
+      List<Measure> _measures) {
+    List<Preasure> data =
+        _measures.map((m) => (m is Preasure) ? m : null).toList();
     data.removeWhere((m) => m == null);
     data.removeWhere((m) => m.high == null || m.high == 0);
     data.removeWhere((m) => m.low == null || m.low == 0);
@@ -194,9 +257,10 @@ class HistoricPage extends StatelessWidget {
     ];
   }
 
-  static List<charts.Series<Preasure, DateTime>> _createPulseData(List<Measure> _measures) {
-
-    List<Preasure> data = _measures.map((m) => (m is Preasure)? m : null).toList();
+  static List<charts.Series<Preasure, DateTime>> _createPulseData(
+      List<Measure> _measures) {
+    List<Preasure> data =
+        _measures.map((m) => (m is Preasure) ? m : null).toList();
     data.removeWhere((m) => m == null);
 
     return [
@@ -210,9 +274,9 @@ class HistoricPage extends StatelessWidget {
     ];
   }
 
-  static List<charts.Series<Weight, DateTime>> _createWeightData(List<Measure> _measures) {
-
-    List<Weight> data = _measures.map((m) => (m is Weight)? m : null).toList();
+  static List<charts.Series<Weight, DateTime>> _createWeightData(
+      List<Measure> _measures) {
+    List<Weight> data = _measures.map((m) => (m is Weight) ? m : null).toList();
     data.removeWhere((m) => m == null);
 
     return [
@@ -225,5 +289,4 @@ class HistoricPage extends StatelessWidget {
       )
     ];
   }
-
 }
