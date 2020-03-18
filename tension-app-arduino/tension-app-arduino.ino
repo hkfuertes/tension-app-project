@@ -1,13 +1,18 @@
 #include <ESP8266WiFi.h>
 #include <DNSServer.h>
+//https://github.com/alanswx/ESPAsyncWiFiManager#install-through-library-manager
 #include <ESPAsyncWiFiManager.h>
 
+//https://github.com/me-no-dev/ESPAsyncTCP
+//https://github.com/me-no-dev/ESPAsyncWebServer
 #include <ESPAsyncWebServer.h>
+//https://github.com/Links2004/arduinoWebSockets --> Libreria "WebSockets (client + server)"
 #include <WebSocketsServer.h>
 
 #include <FS.h>
 
 #include <Wire.h>
+//https://github.com/sparkfun/SparkFun_MAX3010x_Sensor_Library
 #include "MAX30105.h"  //MAX3010x library
 #include "heartRate.h" //Heart rate calculating algorithm
 
@@ -26,11 +31,13 @@ WebSocketsServer webSocket = WebSocketsServer(81);
 AsyncWebServer server(80);
 DNSServer dns;
 
+bool wifi = true;
+
 void InitServer()
 {
 
     SPIFFS.begin(); // Start the SPI Flash Files System
-
+    //https://github.com/esp8266/arduino-esp8266fs-plugin
     server.serveStatic("/", SPIFFS, "/").setDefaultFile("index.html");
 
     server.begin();
@@ -40,54 +47,27 @@ void InitServer()
 void setup()
 {
     Serial.begin(115200);
-    // Creamos una instancia de la clase WiFiManager
-    AsyncWiFiManager wifiManager(&server, &dns);
 
-    // Descomentar para resetear configuración
-    //wifiManager.resetSettings();
-
-    // Cremos AP y portal cautivo
-    wifiManager.autoConnect("ESP8266Temp");
-    //Serial.println("Ya estás conectado: "+ WiFi.localIP());
-    webSocket.begin();
-    //webSocket.onEvent(webSocketEvent);
+    if(wifi==true){
+      // Creamos una instancia de la clase WiFiManager
+      AsyncWiFiManager wifiManager(&server, &dns);
+  
+      // Descomentar para resetear configuración
+      //wifiManager.resetSettings();
+  
+      // Cremos AP y portal cautivo
+      wifiManager.autoConnect("ESP8266Temp");
+      //Serial.println("Ya estás conectado: "+ WiFi.localIP());
+      webSocket.begin();
+      //webSocket.onEvent(webSocketEvent);
+    }
 
     // Initialize sensor
     particleSensor.begin(Wire, I2C_SPEED_FAST); //Use default I2C port, 400kHz speed
     particleSensor.setup();                     //Configure sensor with default settings
     particleSensor.setPulseAmplitudeRed(0x0A);  //Turn Red LED to low to indicate sensor is running
 
-    InitServer();
-}
-
-void webSocketEvent(byte num, WStype_t type, uint8_t *payload, size_t length)
-{
-    if (type == WStype_TEXT)
-    {
-        if (payload[0] == '0')
-        {
-            //digitalWrite(pin_led, LOW);
-            Serial.println("LED=off");
-        }
-        else if (payload[0] == '1')
-        {
-            //digitalWrite(pin_led, HIGH);
-            Serial.println("LED=on");
-        }
-    }
-
-    else // event is not TEXT. Display the details in the serial monitor
-    {
-        Serial.print("WStype = ");
-        Serial.println(type);
-        Serial.print("WS payload = ");
-        // since payload is a pointer we need to type cast to char
-        for (int i = 0; i < length; i++)
-        {
-            Serial.print((char)payload[i]);
-        }
-        Serial.println();
-    }
+    if(wifi==true) InitServer();
 }
 
 void loop()
@@ -127,7 +107,7 @@ void loop()
             }
 
             sprintf(datagram, "{ \"pulse\": \"%lu\" }", beatAvg);
-            webSocket.broadcastTXT(datagram);
+            if(wifi==true) webSocket.broadcastTXT(datagram);
             Serial.println(datagram);
         }
     }
