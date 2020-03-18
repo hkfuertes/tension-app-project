@@ -86,6 +86,7 @@ class PatientApi {
           "height": patient.height.toString(),
           "limit_systolic": patient.limit_systolic.toString(),
           "limit_diastolic": patient.limit_diastolic.toString(),
+          "limit_pulse": patient.limit_pulse.toString(),
           "rythm_type": patient.rythm_type.toString(),
           "treatment": patient.treatment
         });

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:tension_app/pages/PatientInfoPage.dart';
-import 'package:tension_app/pages/PatientTreatment.dart';
+import 'package:tension_app/widgets/PatientListTile.dart';
+import '../pages/PatientInfoPage.dart';
+import '../pages/PatientTreatment.dart';
 import 'PressureInputPage.dart';
 import 'PulseInputPage.dart';
 import 'WeightInputDialog.dart';
@@ -53,9 +54,14 @@ class HistoricPage extends StatelessWidget {
     _patient = _settings.viewingPatient;
     return Scaffold(
       appBar: AppBar(
-        title: Text(_patient != null
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+          Text(_patient != null
             ? _patient.name + " " + _patient.lastName
             : Constants.historics_title),
+            Text(Patient.rythmTypes[_patient.rythm_type], style: Theme.of(context).textTheme.body1.copyWith(color: Colors.white, fontStyle: FontStyle.italic))
+        ],),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.history),
@@ -90,7 +96,10 @@ class HistoricPage extends StatelessWidget {
                   return Future<void>(() {});
                 },
                 child: ListView.builder(
-                    itemCount: (_patient.treatment != "")? snapshot.data.length + 2:snapshot.data.length + 1,
+                    itemCount:
+                        (_patient.treatment != "" && _patient.treatment != null)
+                            ? snapshot.data.length + 2
+                            : snapshot.data.length + 1,
                     itemBuilder: (BuildContext context, int position) {
                       if (position == 0)
                         return !_settings.graphsShown
@@ -102,16 +111,30 @@ class HistoricPage extends StatelessWidget {
                                   controller: _measuresController,
                                   children: <Widget>[
                                     GraphWidget(
-                                        series:
-                                            _createPressureData(snapshot.data),
-                                        title: "Presión Sanguinea",
-                                        position: 1,
-                                        total: 3),
+                                      series:
+                                          _createPressureData(snapshot.data),
+                                      title: "Presión Sanguinea",
+                                      position: 1,
+                                      total: 3,
+                                      annotations: (_patient.limit_diastolic !=
+                                                  null &&
+                                              _patient.limit_systolic != null)
+                                          ? _pressureAnnotations(
+                                              _patient.limit_systolic,
+                                              _patient.limit_diastolic)
+                                          : [],
+                                    ),
                                     GraphWidget(
-                                        series: _createPulseData(snapshot.data),
-                                        title: "Pulso (bpm)",
-                                        position: 2,
-                                        total: 3),
+                                      series: _createPulseData(snapshot.data),
+                                      title: "Pulso (bpm)",
+                                      position: 2,
+                                      total: 3,
+                                      annotations: (_patient.limit_pulse !=
+                                              null)
+                                          ? _pulseAnnotation(
+                                              _patient.limit_pulse.toDouble())
+                                          : [],
+                                    ),
                                     GraphWidget(
                                         series:
                                             _createWeightData(snapshot.data),
@@ -121,7 +144,9 @@ class HistoricPage extends StatelessWidget {
                                   ],
                                 ),
                               );
-                      else if (position == 1 && _patient.treatment != null)
+                      else if (position == 1 &&
+                          _patient.treatment != "" &&
+                          _patient.treatment != null)
                         return Container(
                             padding: const EdgeInsets.all(8.0),
                             child: Column(
@@ -161,7 +186,10 @@ class HistoricPage extends StatelessWidget {
                                   ),
                                 ]));
                       else
-                        return MeasureWidget(snapshot.data[position - 1], height: this._patient.height,);
+                        return MeasureWidget(
+                          snapshot.data[position - 1],
+                          height: this._patient.height,
+                        );
                     }),
               );
             } else
@@ -213,11 +241,11 @@ class HistoricPage extends StatelessWidget {
     return [
       new charts.LineAnnotationSegment(
           high, charts.RangeAnnotationAxisType.measure,
-          //startLabel: high.toString()+" mmHg",
+          startLabel: high.toString() + " mmHg",
           color: charts.MaterialPalette.gray.shade300),
       new charts.LineAnnotationSegment(
           low, charts.RangeAnnotationAxisType.measure,
-          //startLabel: low.toString()+" mmHg",
+          startLabel: low.toString() + " mmHg",
           color: charts.MaterialPalette.gray.shade200),
     ];
   }
@@ -227,6 +255,15 @@ class HistoricPage extends StatelessWidget {
       new charts.LineAnnotationSegment(
           value, charts.RangeAnnotationAxisType.measure,
           startLabel: 'Objetivo (' + value.toString() + " kg)",
+          color: charts.MaterialPalette.gray.shade300)
+    ];
+  }
+
+  static List<charts.LineAnnotationSegment> _pulseAnnotation(double value) {
+    return [
+      new charts.LineAnnotationSegment(
+          value, charts.RangeAnnotationAxisType.measure,
+          startLabel: 'Limite (' + value.toString() + " bpm)",
           color: charts.MaterialPalette.gray.shade300)
     ];
   }

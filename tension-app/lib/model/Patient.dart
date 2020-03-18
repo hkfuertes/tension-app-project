@@ -9,9 +9,16 @@ class Patient {
   String treatment;
   int limit_systolic;
   int limit_diastolic;
+  int limit_pulse;
   int rythm_type;
 
-  Patient({this.id, this.name, this.lastName, this.gender, this.height, this.birthDay, this.limit_systolic, this.limit_diastolic, this.rythm_type, this.treatment});
+  static List<String> rythmTypes = [
+    'Ritmo Sinusal',
+    'FA Paroxistica',
+    'FA Permanente'
+  ];
+
+  Patient({this.id, this.name, this.lastName, this.gender, this.height, this.birthDay, this.limit_pulse, this.limit_systolic, this.limit_diastolic, this.rythm_type, this.treatment});
 
   factory Patient.fromJson(Map<String, dynamic> json) {
     return Patient(
@@ -23,6 +30,7 @@ class Patient {
       birthDay: json['birthday'] != null ? DateTime.parse(json['birthday']): null,
       limit_systolic: json['limit_systolic'],
       limit_diastolic: json['limit_diastolic'],
+      limit_pulse: json['limit_pulse'],
       rythm_type: json['rythm_type'],
       treatment: json['treatment']
     );

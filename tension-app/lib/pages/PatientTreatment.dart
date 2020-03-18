@@ -19,26 +19,25 @@ class _PatientTreatmentState extends State<PatientTreatment> {
 
   TextEditingController _tratamiento = TextEditingController(),
       _limiteDiastolica = TextEditingController(),
+      _limitePulso = TextEditingController(),
       _limiteSistolica = TextEditingController();
 
   Settings _settings;
 
   int _rythm_type;
-  List<String> _rythm_types = [
-    'Ritmo Sinusal',
-    ' FA Paroxistica',
-    'FA Permanente'
-  ];
+  
 
   final double _padding = 16.0;
 
   _fillData(Patient patient){
     if(_tratamiento.text == "")
-      _tratamiento.text = patient.treatment;
+      _tratamiento.text = (patient.treatment != null)?patient.treatment:"";
     if(_limiteDiastolica.text == "")
-      _limiteDiastolica.text = patient.limit_diastolic.toString();
+      _limiteDiastolica.text = (patient.limit_diastolic!=null) ? patient.limit_diastolic.toString():"";
     if(_limiteSistolica.text == "")
-      _limiteSistolica.text = patient.limit_systolic.toString();
+      _limiteSistolica.text = (patient.limit_systolic != null) ? patient.limit_systolic.toString():"";
+    if(_limitePulso.text == "")
+      _limitePulso.text = (patient.limit_pulse != null) ? patient.limit_pulse.toString():"";
     if(_rythm_type == null)  
       _rythm_type = patient.rythm_type;
   }
@@ -64,8 +63,9 @@ class _PatientTreatmentState extends State<PatientTreatment> {
             onPressed: () async {
               //_settings.viewingPatient = _recreatePatient();
               _settings.viewingPatient.treatment = _tratamiento.text;
-              _settings.viewingPatient.limit_diastolic = int.parse(_limiteDiastolica.text);
-              _settings.viewingPatient.limit_systolic = int.parse(_limiteSistolica.text);
+              _settings.viewingPatient.limit_diastolic = (_limiteDiastolica.text!="") ? int.parse(_limiteDiastolica.text): null;
+              _settings.viewingPatient.limit_systolic = (_limiteSistolica.text != "") ? int.parse(_limiteSistolica.text): null;
+              _settings.viewingPatient.limit_pulse = (_limitePulso.text != "") ? int.parse(_limitePulso.text): null;
               _settings.viewingPatient.rythm_type = _rythm_type;
 
               _settings.updateCahedPatientWithViewingPatient();
@@ -113,10 +113,25 @@ class _PatientTreatmentState extends State<PatientTreatment> {
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: _padding),
+            child: TextField(
+              controller: _limitePulso,
+              keyboardType: TextInputType.number,
+              autofocus: false,
+              decoration: InputDecoration(
+                  suffixText: "bpm",
+                  labelText: "Límite Frecuencia Cardiaca",
+                  border: OutlineInputBorder()),
+            ),
+          ),
+          Container(
+            height: spacing,
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: _padding),
             child: DropdownButton<int>(
               isExpanded: true,
               value: _rythm_type,
-              items: _rythm_types.asMap().entries.map((entry) {
+              items: Patient.rythmTypes.asMap().entries.map((entry) {
                 return new DropdownMenuItem<int>(
                   value: entry.key,
                   child: new Text(entry.value),
