@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:tension_app/widgets/PatientListTile.dart';
 import '../pages/PatientInfoPage.dart';
 import '../pages/PatientTreatment.dart';
 import 'PressureInputPage.dart';
@@ -59,7 +58,7 @@ class HistoricPage extends StatelessWidget {
               series: _createPressureData(measures),
               title: "Presión Sanguinea",
               position: 1,
-              total: 3,
+              total: 4,
               annotations: (_patient.limit_diastolic != null &&
                       _patient.limit_systolic != null)
                   ? _pressureAnnotations(
@@ -70,7 +69,7 @@ class HistoricPage extends StatelessWidget {
               series: _createPulseData(measures),
               title: "Pulso (bpm)",
               position: 2,
-              total: 3,
+              total: 4,
               annotations: (_patient.limit_pulse != null)
                   ? _pulseAnnotation(_patient.limit_pulse.toDouble())
                   : [],
@@ -79,7 +78,13 @@ class HistoricPage extends StatelessWidget {
                 series: _createWeightData(measures),
                 title: "Peso (kg)",
                 position: 3,
-                total: 3),
+                total: 4),
+            GraphWidget(
+              series: _createImcData(_patient, measures),
+              title: "IMC",
+              position: 4,
+              total: 4,
+            )
           ],
         ),
       ));
@@ -138,35 +143,34 @@ class HistoricPage extends StatelessWidget {
     _patient = _settings.viewingPatient;
     return Scaffold(
       appBar: AppBar(
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(_patient != null
-                ? _patient.name + " " + _patient.lastName
-                : Constants.historics_title),
-            (_patient.rythm_type != null)
-                ? Text(Patient.rythmTypes[_patient.rythm_type],
-                    style: Theme.of(context).textTheme.body1.copyWith(
-                        color: Colors.white, fontStyle: FontStyle.italic))
-                : Container()
-          ],
+        title: InkWell(
+          onTap: () async {
+            await Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => PatientInfoPage(edit: true)));
+            _settings.refreshUI();
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(_patient != null
+                  ? _patient.name + " " + _patient.lastName
+                  : Constants.historics_title),
+              (_patient.rythm_type != null)
+                  ? Text(Patient.rythmTypes[_patient.rythm_type],
+                      style: Theme.of(context).textTheme.body1.copyWith(
+                          color: Colors.white, fontStyle: FontStyle.italic))
+                  : Container()
+            ],
+          ),
         ),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.history),
+            icon: Icon(FontAwesomeIcons.fileMedicalAlt),
             onPressed: () async {
               await Navigator.push(context,
                   MaterialPageRoute(builder: (context) => PatientTreatment()));
-              _settings.refreshUI();
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.edit),
-            onPressed: () async {
-              await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => PatientInfoPage(edit: true)));
               _settings.refreshUI();
             },
           )
@@ -316,6 +320,24 @@ class HistoricPage extends StatelessWidget {
         colorFn: (_, __) => charts.MaterialPalette.red.shadeDefault,
         domainFn: (Weight p, _) => p.timestamp,
         measureFn: (Weight p, _) => p.value,
+        data: data,
+      )
+    ];
+  }
+
+  static List<charts.Series<Weight, DateTime>> _createImcData(
+      Patient patient, List<Measure> _measures) {
+    List<Weight> data = _measures.map((m) => (m is Weight) ? m : null).toList();
+    data.removeWhere((m) => m == null);
+
+    return [
+      new charts.Series<Weight, DateTime>(
+        id: 'IMC',
+        colorFn: (_, __) => charts.MaterialPalette.purple.shadeDefault,
+        domainFn: (Weight p, _) => p.timestamp,
+        measureFn: (Weight p, _) => double.parse(
+            (p.value / ((patient.height / 100) * (patient.height / 100)))
+                .toStringAsFixed(2)),
         data: data,
       )
     ];

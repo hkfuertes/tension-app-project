@@ -47,8 +47,10 @@ class PatientApi {
         body: {
           "name": patient.name,
           "lastName": patient.lastName,
-          "email": patient.name.toLowerCase()+"@"+patient.lastName.toLowerCase(),
-          "password": patient.name.toLowerCase()+"_"+patient.lastName.toLowerCase(),
+          "email":
+              patient.name.toLowerCase() + "@" + patient.lastName.toLowerCase(),
+          "password":
+              patient.name.toLowerCase() + "_" + patient.lastName.toLowerCase(),
           "gender": patient.gender,
           "birthday": patient.birthDay.day.toString().padLeft(2, "0") +
               "-" +
@@ -90,7 +92,18 @@ class PatientApi {
           "limit_diastolic": patient.limit_diastolic.toString(),
           "limit_pulse": patient.limit_pulse.toString(),
           "rythm_type": patient.rythm_type.toString(),
-          "treatment": patient.treatment.toString()
+          "treatment": patient.treatment.toString(),
+          "history": patient.history.toString(),
+          'erc': patient.indicators['erc'].toString(),
+          'fg': patient.indicators['fg'].toString(),
+          'asma': patient.indicators['asma'].toString(),
+          'epoc': patient.indicators['epoc'].toString(),
+          'dm': patient.indicators['dm'].toString(),
+          'dislipemia': patient.indicators['dislipemia'].toString(),
+          'isquemic_cardiopatia':
+              patient.indicators['isquemic_cardiopatia'].toString(),
+          'prev_insuf_caridiaca':
+              patient.indicators['prev_insuf_caridiaca'].toString(),
         });
 
     if (response.statusCode == 200) {

@@ -6,6 +6,7 @@ import 'package:tension_app/model/Patient.dart';
 import 'package:tension_app/model/Settings.dart';
 
 import '../constants.dart' as Constants;
+import '../widgets.dart';
 
 class PatientTreatment extends StatefulWidget {
   bool edit;
@@ -20,26 +21,32 @@ class _PatientTreatmentState extends State<PatientTreatment> {
   TextEditingController _tratamiento = TextEditingController(),
       _limiteDiastolica = TextEditingController(),
       _limitePulso = TextEditingController(),
+      _antecedentes = TextEditingController(),
       _limiteSistolica = TextEditingController();
 
   Settings _settings;
 
   int _rythm_type;
-  
 
   final double _padding = 16.0;
 
-  _fillData(Patient patient){
-    if(_tratamiento.text == "")
-      _tratamiento.text = (patient.treatment != null)?patient.treatment:"";
-    if(_limiteDiastolica.text == "")
-      _limiteDiastolica.text = (patient.limit_diastolic!=null) ? patient.limit_diastolic.toString():"";
-    if(_limiteSistolica.text == "")
-      _limiteSistolica.text = (patient.limit_systolic != null) ? patient.limit_systolic.toString():"";
-    if(_limitePulso.text == "")
-      _limitePulso.text = (patient.limit_pulse != null) ? patient.limit_pulse.toString():"";
-    if(_rythm_type == null)  
-      _rythm_type = patient.rythm_type;
+  _fillData(Patient patient) {
+    if (_tratamiento.text == "")
+      _tratamiento.text = (patient.treatment != null) ? patient.treatment : "";
+    if (_antecedentes.text == "")
+      _antecedentes.text = (patient.history != null) ? patient.history : "";
+    if (_limiteDiastolica.text == "")
+      _limiteDiastolica.text = (patient.limit_diastolic != null)
+          ? patient.limit_diastolic.toString()
+          : "";
+    if (_limiteSistolica.text == "")
+      _limiteSistolica.text = (patient.limit_systolic != null)
+          ? patient.limit_systolic.toString()
+          : "";
+    if (_limitePulso.text == "")
+      _limitePulso.text =
+          (patient.limit_pulse != null) ? patient.limit_pulse.toString() : "";
+    if (_rythm_type == null) _rythm_type = patient.rythm_type;
   }
 
   @override
@@ -63,9 +70,17 @@ class _PatientTreatmentState extends State<PatientTreatment> {
             onPressed: () async {
               //_settings.viewingPatient = _recreatePatient();
               _settings.viewingPatient.treatment = _tratamiento.text;
-              _settings.viewingPatient.limit_diastolic = (_limiteDiastolica.text!="") ? int.parse(_limiteDiastolica.text): null;
-              _settings.viewingPatient.limit_systolic = (_limiteSistolica.text != "") ? int.parse(_limiteSistolica.text): null;
-              _settings.viewingPatient.limit_pulse = (_limitePulso.text != "") ? int.parse(_limitePulso.text): null;
+              _settings.viewingPatient.limit_diastolic =
+                  (_limiteDiastolica.text != "")
+                      ? int.parse(_limiteDiastolica.text)
+                      : null;
+              _settings.viewingPatient.limit_systolic =
+                  (_limiteSistolica.text != "")
+                      ? int.parse(_limiteSistolica.text)
+                      : null;
+              _settings.viewingPatient.limit_pulse = (_limitePulso.text != "")
+                  ? int.parse(_limitePulso.text)
+                  : null;
               _settings.viewingPatient.rythm_type = _rythm_type;
 
               _settings.updateCahedPatientWithViewingPatient();
@@ -156,7 +171,34 @@ class _PatientTreatmentState extends State<PatientTreatment> {
               decoration: InputDecoration(
                   labelText: "Tratamiento", border: OutlineInputBorder()),
             ),
-          )
+          ),
+          Column(
+            children: _settings.viewingPatient.indicators.entries
+                .map((entry) => CustomRadioButton(
+                      value: entry.value,
+                      name: Patient.indicatorsDescription[entry.key],
+                      onTap: (newValue) {
+                        setState(() {
+                          _settings.viewingPatient.indicators[entry.key] =
+                              newValue;
+                        });
+                      },
+                    ))
+                .toList(),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: _padding),
+            child: TextField(
+              controller: _antecedentes,
+              keyboardType: TextInputType.multiline,
+              maxLines: 10,
+              decoration: InputDecoration(
+                  labelText: "Antecedentes", border: OutlineInputBorder()),
+            ),
+          ),
+          Container(
+            height: spacing,
+          ),
         ],
       ),
     );

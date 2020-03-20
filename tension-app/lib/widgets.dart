@@ -240,3 +240,63 @@ class WeightViewWidget extends StatelessWidget {
     );
   }
 }
+
+class CustomRadioButton extends StatelessWidget {
+  final TextStyle _selectedTextStyle =
+      TextStyle(fontWeight: FontWeight.bold, color: Colors.brown);
+  final TextStyle _notSelectedTextStyle =
+      TextStyle(fontWeight: FontWeight.normal);
+  final BoxDecoration _bdecor = BoxDecoration(
+    border: Border.all(color: Colors.brown),
+    borderRadius: BorderRadius.circular(8)
+  );
+  final bool value;
+  final String name;
+  final Function onTap;
+  CustomRadioButton({this.value, this.name, this.onTap});
+  
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Text(name, style: TextStyle(fontWeight: FontWeight.bold),),
+            ],
+          ),
+          Container(height: 8,),
+          Row(children: [
+            Expanded(
+              child: Container(
+                decoration: (value) ? _bdecor : BoxDecoration(),
+                child: FlatButton(
+                  child: Text("Sí", style: (value) ? _selectedTextStyle : _notSelectedTextStyle),
+                  onPressed: () async {
+                    if(onTap != null)
+                      onTap(true);
+                  },
+                ),
+              ),
+            ),
+            Container(width: 4,),
+            Expanded(
+              child: Container(
+                decoration: (!value) ? _bdecor : BoxDecoration(),
+                child: FlatButton(
+                  child: Text("No", style: (!value) ? _selectedTextStyle : _notSelectedTextStyle),
+                  onPressed: () async {
+                    if(onTap != null)
+                      onTap(false);
+                  },
+                ),
+              ),
+            )
+          ]),
+          Container(height: 8,)
+        ],
+      ),
+    );
+  }
+}
