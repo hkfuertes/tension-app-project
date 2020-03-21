@@ -41,4 +41,15 @@ static Future<List<dynamic>> getPulses(Settings settings) async {
     }
   }
 
+  static Future<List<dynamic>> getAll(Settings settings) async {
+    final response = await ValidationHelper.doGet(settings, Constants.baseUrl + '/stats',
+        headers: {Constants.token_key: "Bearer " + settings.access_token});
+
+    if (response.statusCode == 200) {
+      return json.decode(response.body)['data'];
+    } else {
+      return null;
+    }
+  }
+
 }
