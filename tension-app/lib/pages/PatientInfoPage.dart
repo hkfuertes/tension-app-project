@@ -210,14 +210,16 @@ class _PatientInfoPageState extends State<PatientInfoPage> {
                                       _settings)) {
                                     _settings.cachedPatientList
                                         .remove(_settings.viewingPatient);
-                                        Navigator.pop(context);
+                                    Navigator.pop(context);
                                     _settings.viewingPatient = null;
                                     _settings.refreshUI();
                                   }
                                 },
                               )
                             ],
-                            content: Text(Constants.delete_patient_text.replaceAll("<patient.name>", _settings.viewingPatient.name)),
+                            content: Text(Constants.delete_patient_text
+                                .replaceAll("<patient.name>",
+                                    _settings.viewingPatient.name)),
                             title: Text(Constants.delete_patient_title),
                           );
                         },
@@ -242,12 +244,21 @@ class _PatientInfoPageState extends State<PatientInfoPage> {
   }
 
   Patient _recreatePatient() {
-    return Patient(
-        id: (!this.widget.edit) ? "NEW" : _settings.viewingPatient.id,
+    if (this.widget.edit) {
+      _settings.viewingPatient.name = this._nombre.text;
+      _settings.viewingPatient.lastName = this._appellido.text;
+      _settings.viewingPatient.gender = this._generosIngles[this._genero];
+      _settings.viewingPatient.height = int.parse(this._altura.text);
+      _settings.viewingPatient.birthDay = _selectedDate;
+      return _settings.viewingPatient;
+    } else
+      return Patient(
+        id: "NEW",
         name: this._nombre.text,
         lastName: this._appellido.text,
         gender: this._generosIngles[this._genero],
         height: int.parse(this._altura.text),
-        birthDay: _selectedDate);
+        birthDay: _selectedDate,
+      );
   }
 }

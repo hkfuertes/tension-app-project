@@ -98,8 +98,8 @@ class HistoricPage extends StatelessWidget {
                     .expand((i) => i)
                     .toList(),
               ),
-              Container(height: 8),
-              Align(alignment: Alignment.topLeft, child: Text(_patient.history)),
+              _patient.history != null ? Container(height: 8): Container(),
+              _patient.history != null ? Align(alignment: Alignment.topLeft, child: Text(_patient.history)): Container(),
               //Divider()
             ])));
 
