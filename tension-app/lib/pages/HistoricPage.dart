@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 import '../pages/PatientInfoPage.dart';
 import '../pages/PatientTreatment.dart';
@@ -47,6 +48,61 @@ class HistoricPage extends StatelessWidget {
   List<Widget> _populateChildren(List<Measure> measures) {
     List<Widget> retVal = [];
 
+    retVal.add(Container(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    Text(
+                      "Antecedentes",
+                      style: TextStyle(color: Colors.brown, fontSize: 16),
+                    )
+                  ],
+                ),
+              ),
+              Wrap(
+                alignment: WrapAlignment.start,
+                children: this
+                    ._patient
+                    .indicators
+                    .entries
+                    .where((e) => e.value == true)
+                    .map((e) {
+                      return [
+                        (e.key == 'erc')
+                            ? Text(
+                                Patient.indicatorsDescription[e.key] +
+                                    " (FG: " +
+                                    _patient.indicators['erc_fg'].toString() +
+                                    ")",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              )
+                            : Text(
+                                Patient.indicatorsDescription[e.key],
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                        (_patient.indicators.entries
+                                    .where((e) => e.value == true)
+                                    .last
+                                    .key ==
+                                e.key)
+                            ? Container()
+                            : Text(", ")
+                      ];
+                    })
+                    .expand((i) => i)
+                    .toList(),
+              ),
+              Container(height: 8),
+              Align(alignment: Alignment.topLeft, child: Text(_patient.history)),
+              //Divider()
+            ])));
+
     if (_settings.graphsShown)
       retVal.add(Container(
         padding: const EdgeInsets.all(8.0),
@@ -84,7 +140,7 @@ class HistoricPage extends StatelessWidget {
               title: "IMC",
               position: 4,
               total: 4,
-            )
+            ),
           ],
         ),
       ));
@@ -109,19 +165,14 @@ class HistoricPage extends StatelessWidget {
                 Row(
                   children: <Widget>[
                     Expanded(
-                      child: Container(
-                        height: 150,
-                        child: Card(
-                          child: SingleChildScrollView(
-                              child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(_patient.treatment),
-                          )),
-                        ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(_patient.treatment),
                       ),
                     ),
                   ],
                 ),
+                Divider()
               ])));
 
     retVal.addAll(measures

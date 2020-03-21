@@ -14,15 +14,15 @@ class Patient {
 
   static Map<String, String> indicatorsDescription = {
     'erc': 'ERC',
-    'fg': 'FG',
+    'erc_fg': 'FG',
     'asma': 'Asma',
     'epoc': 'EPOC',
     'dm': 'Diabetes (DM)',
     'dislipemia': 'Dislipemia',
     'isquemic_cardiopatia': 'Cardiopatía Isquémica',
-    'prev_insuf_caridiaca': 'Insuficiencia Cardiaca previa'
+    'prev_insuf_cardiaca': 'Insuficiencia Cardiaca previa'
   };
-  Map<String, bool> indicators;
+  Map<String, dynamic> indicators;
 
   static List<String> rythmTypes = [
     'Ritmo Sinusal',
@@ -49,13 +49,13 @@ class Patient {
   factory Patient.fromJson(Map<String, dynamic> json) {
     var indicators = {
       'erc': json['erc'].toString().toLowerCase() == 'true',
-      'fg': json['fg'].toString().toLowerCase() == 'true',
+      'erc_fg': json['erc_fg'],
       'asma': json['asma'].toString().toLowerCase() == 'true',
       'epoc': json['epoc'].toString().toLowerCase() == 'true',
       'dm': json['dm'].toString().toLowerCase() == 'true',
       'dislipemia': json['dislipemia'].toString().toLowerCase() == 'true',
       'isquemic_cardiopatia': json['isquemic_cardiopatia'].toString().toLowerCase() == 'true',
-      'prev_insuf_caridiaca': json['prev_insuf_caridiaca'].toString().toLowerCase() == 'true',
+      'prev_insuf_cardiaca': json['prev_insuf_cardiaca'].toString().toLowerCase() == 'true',
     };
 
     return Patient(

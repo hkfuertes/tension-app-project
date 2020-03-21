@@ -22,6 +22,7 @@ class _PatientTreatmentState extends State<PatientTreatment> {
       _limiteDiastolica = TextEditingController(),
       _limitePulso = TextEditingController(),
       _antecedentes = TextEditingController(),
+      _ercFg = TextEditingController(),
       _limiteSistolica = TextEditingController();
 
   Settings _settings;
@@ -38,6 +39,10 @@ class _PatientTreatmentState extends State<PatientTreatment> {
     if (_limiteDiastolica.text == "")
       _limiteDiastolica.text = (patient.limit_diastolic != null)
           ? patient.limit_diastolic.toString()
+          : "";
+    if (_ercFg.text == "")
+      _ercFg.text = (patient.indicators['erc_fg'] != null)
+          ? patient.indicators['erc_fg'].toString()
           : "";
     if (_limiteSistolica.text == "")
       _limiteSistolica.text = (patient.limit_systolic != null)
@@ -70,6 +75,7 @@ class _PatientTreatmentState extends State<PatientTreatment> {
             onPressed: () async {
               //_settings.viewingPatient = _recreatePatient();
               _settings.viewingPatient.treatment = _tratamiento.text;
+              _settings.viewingPatient.history = this._antecedentes.text;
               _settings.viewingPatient.limit_diastolic =
                   (_limiteDiastolica.text != "")
                       ? int.parse(_limiteDiastolica.text)
@@ -80,6 +86,9 @@ class _PatientTreatmentState extends State<PatientTreatment> {
                       : null;
               _settings.viewingPatient.limit_pulse = (_limitePulso.text != "")
                   ? int.parse(_limitePulso.text)
+                  : null;
+              _settings.viewingPatient.indicators['erc_fg'] = (_ercFg.text != "")
+                  ? int.parse(_ercFg.text)
                   : null;
               _settings.viewingPatient.rythm_type = _rythm_type;
 
@@ -172,8 +181,38 @@ class _PatientTreatmentState extends State<PatientTreatment> {
                   labelText: "Tratamiento", border: OutlineInputBorder()),
             ),
           ),
+          Row(
+            children: <Widget>[
+              Expanded(
+                child: CustomRadioButton(
+                  value: _settings.viewingPatient.indicators['erc'],
+                  name: Patient.indicatorsDescription['erc'],
+                  onTap: (newValue) {
+                    setState(() {
+                      _settings.viewingPatient.indicators['erc'] = newValue;
+                    });
+                  },
+                ),
+              ),
+              Container(
+                width: 128,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: TextField(
+                    enabled: _settings.viewingPatient.indicators['erc'],
+                    controller: _ercFg,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                        labelText: Patient.indicatorsDescription['erc_fg'],
+                        border: OutlineInputBorder()),
+                  ),
+                ),
+              ),
+            ],
+          ),
           Column(
             children: _settings.viewingPatient.indicators.entries
+                .where((e) => !e.key.contains('erc'))
                 .map((entry) => CustomRadioButton(
                       value: entry.value,
                       name: Patient.indicatorsDescription[entry.key],

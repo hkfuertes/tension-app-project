@@ -14,6 +14,7 @@ class Settings extends ChangeNotifier {
   static const GRAPH_SHOWN = "graph_shown";
   static const WEIGHT_OBJ = "weight_obj";
   static const TARGET_ON = "target_on";
+  static const ARDUINO_ON = "arduino_on";
 
   //Settings
   String access_token = "";
@@ -30,6 +31,8 @@ class Settings extends ChangeNotifier {
   bool objetivo = false;
   double objetivoPeso = -1;
 
+  bool deviceEnable = false;
+
   Settings() {
     this.access_token = "";
     this.refresh_token = "";
@@ -38,6 +41,7 @@ class Settings extends ChangeNotifier {
     this.graphsShown = true;
     this.objetivoPeso = -1;
     this.objetivo = false;
+    this.deviceEnable = true;
   }
 
   void fill(SharedPreferences sp) {
@@ -56,6 +60,9 @@ class Settings extends ChangeNotifier {
 
     this.objetivoPeso = sp.getDouble(WEIGHT_OBJ);
     this.objetivoPeso = (this.objetivoPeso == null) ? 0 : this.objetivoPeso;
+
+    this.deviceEnable = sp.getBool(ARDUINO_ON);
+    this.deviceEnable = (this.deviceEnable == null) ? true : this.deviceEnable;
 
     //notifyListeners();
   }
@@ -91,6 +98,7 @@ class Settings extends ChangeNotifier {
     await sp.setBool(GRAPH_SHOWN, this.graphsShown);
     await sp.setDouble(WEIGHT_OBJ, this.objetivoPeso);
     await sp.setBool(TARGET_ON, this.objetivo);
+    await sp.setBool(ARDUINO_ON, this.deviceEnable);
 
     if(toast)
       Fluttertoast.showToast(

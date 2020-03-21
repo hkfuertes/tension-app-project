@@ -36,6 +36,22 @@ class SettingsPage extends StatelessWidget {
               await _settings?.saveSettings(toast: false);
             },
           ),
+          Divider(),
+          ListTile(
+            leading: Icon(Icons.devices),
+            trailing: Switch(
+                onChanged: (value) async {
+                  _settings?.deviceEnable = value;
+                  await _settings?.saveSettings();
+                },
+                value: _settings.deviceEnable ?? false),
+            title: Text(Constants.device_enabled_title),
+            subtitle: Text(Constants.device_enabled_text),
+            onTap: () async {
+              _settings.deviceEnable = !_settings.deviceEnable;
+              await _settings?.saveSettings(toast: false);
+            },
+          ),
           /*
           Container(
             height: 8.0,

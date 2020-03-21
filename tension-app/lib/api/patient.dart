@@ -95,15 +95,15 @@ class PatientApi {
           "treatment": patient.treatment.toString(),
           "history": patient.history.toString(),
           'erc': patient.indicators['erc'].toString(),
-          'fg': patient.indicators['fg'].toString(),
+          'erc_fg': patient.indicators['erc_fg'].toString(),
           'asma': patient.indicators['asma'].toString(),
           'epoc': patient.indicators['epoc'].toString(),
           'dm': patient.indicators['dm'].toString(),
           'dislipemia': patient.indicators['dislipemia'].toString(),
           'isquemic_cardiopatia':
               patient.indicators['isquemic_cardiopatia'].toString(),
-          'prev_insuf_caridiaca':
-              patient.indicators['prev_insuf_caridiaca'].toString(),
+          'prev_insuf_cardiaca':
+              patient.indicators['prev_insuf_cardiaca'].toString(),
         });
 
     if (response.statusCode == 200) {

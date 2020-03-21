@@ -40,6 +40,9 @@ const patient_weight_obj_value_title = "Valor del objetivo";
 const patient_weight_obj_value_text = "Selecciona el peso objetivo";
 const patient_weight_obj_value_text_selected = "El objetivo actual es de "+Settings.WEIGHT_OBJ+" kg";
 
+const device_enabled_title = "Conexión con dispositivo Arduino";
+const device_enabled_text = "Utilizar el dispositivo arduino via USB para medir la frecuencia cardiaca";
+
 const yes = "Sí";
 const no = "No";
 

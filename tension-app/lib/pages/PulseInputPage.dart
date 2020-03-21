@@ -109,7 +109,7 @@ class _PulseInputPageState extends State<PulseInputPage> {
                     },
                   ),
                   ListTile(
-                    enabled: Platform.isAndroid,
+                    enabled: Platform.isAndroid && _settings.deviceEnable,
                     title: Text("Medir con el aparato"),
                     subtitle:
                         Text("Conectar el aparato al puerto USB para medir."),
